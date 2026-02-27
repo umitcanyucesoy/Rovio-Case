@@ -1,4 +1,5 @@
 using _Game.Scripts.Data;
+using _Game.Scripts.Enums;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -6,13 +7,13 @@ namespace _Game.Scripts.Core.Grid
 {
     public class GridController : MonoBehaviour, IGridProvider
     {
-        [Title("Settings")] 
-        [SerializeField] private Product productPrefab;
+        [Title("Settings")]
+        [SerializeField] private ProductData productData;
         [SerializeField] private Transform gridContainer;
         [SerializeField] private float cellSize = 1f;
-        
+
         private LevelData _currentLevelData;
-        
+
         public void InitGrid(LevelData levelData)
         {
             _currentLevelData = levelData;
@@ -23,29 +24,27 @@ namespace _Game.Scripts.Core.Grid
         {
             ClearGrid();
             if (_currentLevelData?.GridMatrix == null) return;
-            
-            
-            int rows = _currentLevelData.GridMatrix.GetLength(0);
-            int cols = _currentLevelData.GridMatrix.GetLength(1);
 
-            float offsetX = (cols - 1) * cellSize / 2f;
-            float offsetZ = (rows - 1) * cellSize / 2f;
+            var gridWidth  = _currentLevelData.GridMatrix.GetLength(0);
+            var gridHeight = _currentLevelData.GridMatrix.GetLength(1);
 
-            for (int row = 0; row < rows; row++)
+            var offsetX = (gridWidth - 1) * cellSize / 2f;
+            var offsetZ = (gridHeight - 1) * cellSize / 2f;
+
+            for (int y = 0; y < gridHeight; y++)
             {
-                for (int col = 0; col < cols; col++)
+                for (int x = 0; x < gridWidth; x++)
                 {
-                    if (!_currentLevelData.GridMatrix[row, col]) continue;
+                    var productColor = _currentLevelData.GridMatrix[x, y];
+                    if (productColor == ProductColor.Null) continue;
 
-                    Vector3 position = new Vector3(
-                        col * cellSize - offsetX,
-                        0,
-                        row * cellSize - offsetZ
-                    );
-
-                    var product = Instantiate(productPrefab, gridContainer.position + position,
+                    Vector3 position = new Vector3(x * cellSize - offsetX, 0, -y * cellSize + offsetZ);
+                    var product = Instantiate(productData.productPrefab, gridContainer.position + position,
                         Quaternion.identity, gridContainer);
-                    product.name = $"Product_R{row}_C{col}";
+                    product.name = $"Product_{x},{y}_{productColor}";
+
+                    var material = productData.GetMaterial(productColor);
+                    product.SetMaterial(material);
                 }
             }
         }

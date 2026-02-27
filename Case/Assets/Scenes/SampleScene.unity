@@ -658,6 +658,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Scripts.Core.Grid.GridController
   productPrefab: {fileID: 9137488012394399461, guid: 442df946f93db49669e28236e9ea335b, type: 3}
+  productData: {fileID: 11400000, guid: 22c579f4cf13b4396a74772e4420b96b, type: 2}
   gridContainer: {fileID: 791195329}
   cellSize: 1
 --- !u!1 &1157326938

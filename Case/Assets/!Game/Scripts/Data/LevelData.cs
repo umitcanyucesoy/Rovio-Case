@@ -1,3 +1,4 @@
+using _Game.Scripts.Enums;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -14,17 +15,38 @@ namespace _Game.Scripts.Data
 
         [Space(10)]
         [TableMatrix(SquareCells = true, DrawElementMethod = nameof(DrawCell))]
-        public bool[,] GridMatrix;
+        public ProductColor[,] GridMatrix;
 
         private void UpdateGridSize()
         {
-            GridMatrix = new bool[width, height];
+            GridMatrix = new ProductColor[width, height];
         }
         
 #if UNITY_EDITOR
-        private bool DrawCell(Rect rect, bool value)
+        private ProductColor DrawCell(Rect rect, ProductColor value)
         {
-            return UnityEditor.EditorGUI.Toggle(rect, value);
+            if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
+            {
+                value = (ProductColor)(((int)value + 1) % System.Enum.GetValues(typeof(ProductColor)).Length);
+                GUI.changed = true;
+                Event.current.Use();
+            }
+
+            var color = value switch
+            {
+                ProductColor.Red => Color.red,
+                ProductColor.Blue => Color.blue,
+                ProductColor.Green => Color.green,
+                ProductColor.Yellow => Color.yellow,
+                ProductColor.Orange => new Color(1f, 0.5f, 0f),
+                ProductColor.Null => Color.gray,
+                _ => Color.white
+            };
+
+            UnityEditor.EditorGUI.DrawRect(rect, color);
+            UnityEditor.EditorGUI.LabelField(rect, value.ToString(), new GUIStyle { alignment = TextAnchor.MiddleCenter, normal = { textColor = Color.white } });
+
+            return value;
         }
 #endif
     }

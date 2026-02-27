@@ -6,9 +6,9 @@ namespace _Game.Scripts.Core.Grid
     {
         [SerializeField] private new Renderer renderer;
 
-        public void SetColor(Color color)
+        public void SetMaterial(Material material)
         {
-            renderer.material.color = color;
+            renderer.sharedMaterial = material;
         }
     }
 }

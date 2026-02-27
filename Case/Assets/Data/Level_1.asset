@@ -23,93 +23,126 @@ MonoBehaviour:
     SerializationNodes:
     - Name: GridMatrix
       Entry: 7
-      Data: 0|System.Boolean[,], mscorlib
+      Data: 0|_Game.Scripts.Enums.ProductColor[,], Assembly-CSharp
     - Name: 
       Entry: 12
-      Data: 25
+      Data: 36
     - Name: ranks
       Entry: 1
-      Data: 5|5
+      Data: 6|6
     - Name: 
-      Entry: 5
-      Data: true
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: true
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: true
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: true
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 1
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 1
     - Name: 
-      Entry: 5
-      Data: true
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: true
+      Entry: 3
+      Data: 1
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 1
     - Name: 
-      Entry: 5
-      Data: true
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: true
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 1
     - Name: 
-      Entry: 5
-      Data: true
+      Entry: 3
+      Data: 1
     - Name: 
-      Entry: 5
-      Data: true
+      Entry: 3
+      Data: 1
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 0
     - Name: 
-      Entry: 5
-      Data: false
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
     - Name: 
       Entry: 13
       Data: 
     - Name: 
       Entry: 8
       Data: 
-  width: 5
-  height: 5
+  width: 6
+  height: 6
