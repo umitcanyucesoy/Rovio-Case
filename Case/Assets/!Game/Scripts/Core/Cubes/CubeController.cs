@@ -1,44 +1,42 @@
 using System;
 using System.Collections.Generic;
+using _Game.Scripts.Data;
 using _Game.Scripts.Enums;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace _Game.Scripts.Core.Cubes
 {
-    public class CubeController : MonoBehaviour
+    [Serializable]
+    public class CubeData
     {
-        [Serializable]
-        public class CubeData
-        {
-            public CubeColor color;
-            public int value;
-        }
-        
-        [Serializable]
-        public class ColumnData
-        {
-            [LabelText("Columns")]
-            public List<CubeData> columns = new();
-        }
-        
+        public CubeColor color;
+        public int value;
+    }
+
+    [Serializable]
+    public class ColumnData
+    {
+        [LabelText("Columns")]
+        public List<CubeData> columns = new();
+    }   
+    
+    public class CubeController : MonoBehaviour, ICubeProvider
+    {
         [Title("Settings")]
-        [SerializeField] private Cube cubePrefab;
+        [SerializeField] private CubeVisualData cubeVisualData;
         [SerializeField] private Transform cubeContainer;
         [SerializeField] private float spacing = 1.1f;
-        
-        [Title("Cube Grid")]
-        [SerializeField] 
-        private List<ColumnData> rows = new();
-        
+
         private readonly List<List<Cube>> _spawnedCubes = new();
-        
-        private void Start()
+
+        public void InitCubes(LevelData levelData)
         {
-            GenerateCubes();
+            ClearCubes();
+            GenerateCubes(levelData.cubeRows);
         }
 
-        private void GenerateCubes()
+        private void GenerateCubes(List<ColumnData> rows)
         {
             for (int rowIndex = 0; rowIndex < rows.Count; rowIndex++)
             {
@@ -52,8 +50,9 @@ namespace _Game.Scripts.Core.Cubes
                     var cubeData = columnData.columns[colIndex];
                     var position = new Vector3((rowIndex * spacing) - offset, 0, -colIndex * spacing);
 
-                    var cube = Instantiate(cubePrefab, cubeContainer.position + position, Quaternion.identity, cubeContainer);
-                    cube.SetColor(cubeData.color);
+                    var cube = Instantiate(cubeVisualData.cubePrefab, cubeContainer.position + position, Quaternion.identity, cubeContainer);
+                    var material = cubeVisualData.GetMaterial(cubeData.color);
+                    cube.SetMaterial(material);
                     cube.name = $"Cube_R{rowIndex}_C{colIndex} (Value: {cubeData.value})";
 
                     row.Add(cube);
@@ -61,6 +60,15 @@ namespace _Game.Scripts.Core.Cubes
 
                 _spawnedCubes.Add(row);
             }
+        }
+
+        public void ClearCubes()
+        {
+            _spawnedCubes.Clear();
+            
+            if (!cubeContainer) return;
+            for (int i = cubeContainer.childCount - 1; i >= 0; i--)
+                DestroyImmediate(cubeContainer.GetChild(i).gameObject);
         }
     }
 }

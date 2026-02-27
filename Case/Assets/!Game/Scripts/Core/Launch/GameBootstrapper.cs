@@ -1,4 +1,4 @@
-using System;
+using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.Grid;
 using _Game.Scripts.Core.Levels;
 using Sirenix.OdinInspector;
@@ -11,9 +11,11 @@ namespace _Game.Scripts.Core.Launch
         [Title("Controllers")]
         [SerializeField] private GridController gridController;
         [SerializeField] private LevelController levelController;
+        [SerializeField] private CubeController cubeController;
         
         private IGridProvider _gridProvider;
         private ILevelProvider _levelProvider;
+        private ICubeProvider _cubeProvider;
 
         private void Awake()
         {
@@ -29,11 +31,12 @@ namespace _Game.Scripts.Core.Launch
         {
             _gridProvider = gridController;
             _levelProvider = levelController;
+            _cubeProvider = cubeController;
         }
 
         private void InitializeGame()
         {
-            _levelProvider.Init(_gridProvider);
+            _levelProvider.Init(_gridProvider, _cubeProvider);
         }
     }
 }

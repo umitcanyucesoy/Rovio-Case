@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Enums;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -14,8 +17,13 @@ namespace _Game.Scripts.Data
         public int height;
 
         [Space(10)]
+        [Title("Product Grid")]
         [TableMatrix(SquareCells = true, DrawElementMethod = nameof(DrawCell))]
         public ProductColor[,] GridMatrix;
+
+        [Space(10)]
+        [Title("Cube Grid")]
+        public List<ColumnData> cubeRows = new();
 
         private void UpdateGridSize()
         {

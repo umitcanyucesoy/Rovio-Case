@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.Grid;
 using _Game.Scripts.Data;
 using Sirenix.OdinInspector;
@@ -16,10 +17,12 @@ namespace _Game.Scripts.Core.Levels
         private int _currentLevelIndex = 0;
         
         private IGridProvider _gridProvider;
+        private ICubeProvider _cubeProvider;
 
-        public void Init(IGridProvider gridProvider)
+        public void Init(IGridProvider gridProvider, ICubeProvider cubeProvider)
         {
             _gridProvider = gridProvider;
+            _cubeProvider = cubeProvider;
             LoadLevel();
         }
 
@@ -33,6 +36,7 @@ namespace _Game.Scripts.Core.Levels
 
             var levelData = levels[_currentLevelIndex];
             _gridProvider.InitGrid(levelData);
+            _cubeProvider.InitCubes(levelData);
         }
 
         public void NextLevel()
@@ -44,7 +48,6 @@ namespace _Game.Scripts.Core.Levels
             }
             else
                 Debug.Log("[LevelController] No more levels!");
-            
         }
     }
 }

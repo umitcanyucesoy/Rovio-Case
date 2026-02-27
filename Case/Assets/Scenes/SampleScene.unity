@@ -165,6 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Scripts.Core.Launch.GameBootstrapper
   gridController: {fileID: 982797331}
   levelController: {fileID: 1157326940}
+  cubeController: {fileID: 1995105888}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,7 +658,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2bf2b35eee34a768a5869432ea65cd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Scripts.Core.Grid.GridController
-  productPrefab: {fileID: 9137488012394399461, guid: 442df946f93db49669e28236e9ea335b, type: 3}
   productData: {fileID: 11400000, guid: 22c579f4cf13b4396a74772e4420b96b, type: 2}
   gridContainer: {fileID: 791195329}
   cellSize: 1
@@ -862,35 +862,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cbbb91edbbf470bb56f1bb382e457a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Scripts.Core.Cubes.CubeController
-  cubePrefab: {fileID: -4924930039371766851, guid: 5679a86ce197a43af9625639b12f45c0, type: 3}
+  cubeVisualData: {fileID: 11400000, guid: f641864f5bda8455bb47a7d47d52221f, type: 2}
   cubeContainer: {fileID: 554446541}
   spacing: 1.1
-  rows:
-  - columns:
-    - color: 1
-      value: 5
-    - color: 0
-      value: 0
-    - color: 0
-      value: 0
-    - color: 0
-      value: 0
-  - columns:
-    - color: 0
-      value: 0
-    - color: 0
-      value: 0
-    - color: 0
-      value: 0
-    - color: 0
-      value: 0
-    - color: 0
-      value: 0
-  - columns:
-    - color: 0
-      value: 0
-    - color: 0
-      value: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
