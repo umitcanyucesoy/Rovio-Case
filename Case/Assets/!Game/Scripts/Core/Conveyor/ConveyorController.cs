@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using _Game.Scripts.Core.Grid;
 using _Game.Scripts.Data;
 using _Game.Scripts.Events;
+using _Game.Scripts.Services;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Dreamteck.Splines;
@@ -11,11 +13,13 @@ namespace _Game.Scripts.Core.Conveyor
     {
         [Title("References")]
         [SerializeField] private SplineComputer spline;
-        [SerializeField] private GridData gridData;
         [SerializeField] private ConveyorData conveyorData;
 
-        private void OnEnable()
+        private IGridService _gridService;
+
+        public void Init()
         {
+            _gridService = ServiceLocator.Get<IGridService>(); 
             EventBus.Subscribe<LevelLoadedEvent>(OnLevelLoaded);
         }
 
@@ -28,8 +32,8 @@ namespace _Game.Scripts.Core.Conveyor
         
         private void Build(LevelData levelData)
         {
-            int gridWidth = levelData.GridMatrix.GetLength(0);
-            int gridHeight = levelData.GridMatrix.GetLength(1);
+            var gridWidth = levelData.GridMatrix.GetLength(0);
+            var gridHeight = levelData.GridMatrix.GetLength(1);
 
             if (gridWidth <= 0 || gridHeight <= 0)
             {
@@ -37,24 +41,24 @@ namespace _Game.Scripts.Core.Conveyor
                 return;
             }
 
-            float cellSize = gridData.cellSize;
-            Transform gridRoot = gridData.gridContainer;
+            var cellSize = _gridService.GetCellSize();
+            var gridRoot = _gridService.GetGridRoot();
 
-            float offsetX = (gridWidth - 1) * cellSize / 2f;
-            float offsetZ = (gridHeight - 1) * cellSize / 2f;
+            var offsetX = (gridWidth - 1) * cellSize / 2f;
+            var offsetZ = (gridHeight - 1) * cellSize / 2f;
 
-            float minX = -offsetX;
-            float maxX = (gridWidth - 1) * cellSize - offsetX;
+            var minX = -offsetX;
+            var maxX = (gridWidth - 1) * cellSize - offsetX;
 
-            float maxZ = offsetZ;
-            float minZ = -(gridHeight - 1) * cellSize + offsetZ;
+            var maxZ = offsetZ;
+            var minZ = -(gridHeight - 1) * cellSize + offsetZ;
 
-            float p = conveyorData.paddingCells * cellSize;
+            var p = conveyorData.paddingCells * cellSize;
 
-            Vector3 p0 = gridRoot.position + new Vector3(minX - p, conveyorData.yHeight, maxZ + p);
-            Vector3 p1 = gridRoot.position + new Vector3(maxX + p, conveyorData.yHeight, maxZ + p);
-            Vector3 p2 = gridRoot.position + new Vector3(maxX + p, conveyorData.yHeight, minZ - p);
-            Vector3 p3 = gridRoot.position + new Vector3(minX - p, conveyorData.yHeight, minZ - p);
+            var p0 = gridRoot.position + new Vector3(minX - p, conveyorData.yHeight, maxZ + p);
+            var p1 = gridRoot.position + new Vector3(maxX + p, conveyorData.yHeight, maxZ + p);
+            var p2 = gridRoot.position + new Vector3(maxX + p, conveyorData.yHeight, minZ - p);
+            var p3 = gridRoot.position + new Vector3(minX - p, conveyorData.yHeight, minZ - p);
             
 
             var points = BuildOpenRoundedPerimeterPoints(

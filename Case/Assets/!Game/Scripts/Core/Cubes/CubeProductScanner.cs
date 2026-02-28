@@ -144,8 +144,15 @@ namespace _Game.Scripts.Core.Cubes
         {
             product.transform.SetParent(null);
 
+            var startPos = product.transform.position;
+            var cubeTransform = transform;
+
             var seq = DOTween.Sequence();
-            seq.Append(product.transform.DOMove(transform.position, _pullDuration).SetEase(Ease.InBack));
+            seq.Append(DOVirtual.Float(0f, 1f, _pullDuration, t =>
+            {
+                if (product && cubeTransform)
+                    product.transform.position = Vector3.LerpUnclamped(startPos, cubeTransform.position, t);
+            }).SetEase(Ease.InBack));
             seq.Join(product.transform.DOScale(Vector3.zero, _pullDuration).SetEase(Ease.InBack));
             seq.OnComplete(() =>
             {

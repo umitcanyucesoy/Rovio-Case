@@ -1,3 +1,4 @@
+using _Game.Scripts.Core.Conveyor;
 using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.Grid;
 using _Game.Scripts.Core.Input;
@@ -13,6 +14,7 @@ namespace _Game.Scripts.Core.Launch
         [Title("Controllers")]
         [SerializeField] private LevelController levelController;
         [SerializeField] private CubeController cubeController;
+        [SerializeField] private ConveyorController conveyorController;
         
         [Title("Services")]
         [SerializeField] private InputService inputService;
@@ -48,6 +50,7 @@ namespace _Game.Scripts.Core.Launch
 
         private void InitializeGame()
         {
+            conveyorController.Init();
             _levelProvider.Init(_cubeProvider);
             inputService.Init();
         }

@@ -38,11 +38,6 @@ namespace _Game.Scripts.Core.Cubes
 
         private readonly List<List<Cube>> _spawnedCubes = new();
 
-        private void OnEnable()
-        {
-            EventBus.Subscribe<CubeClickedEvent>(OnCubeClicked);
-        }
-
         private void OnDisable()
         {
             EventBus.Unsubscribe<CubeClickedEvent>(OnCubeClicked);
@@ -54,6 +49,7 @@ namespace _Game.Scripts.Core.Cubes
         {
             ClearCubes();
             GenerateCubes(levelData.cubeRows);
+            EventBus.Subscribe<CubeClickedEvent>(OnCubeClicked);
         }
 
         private void GenerateCubes(List<ColumnData> rows)
@@ -105,8 +101,8 @@ namespace _Game.Scripts.Core.Cubes
                 follower.SetPercent(conveyorData.startPercent);
                 follower.follow = true;
 
-                var scanner = cube.GetComponent<CubeProductScanner>();
-                scanner.Init(conveyorData.pullDuration);
+                if (cube.TryGetComponent(out CubeProductScanner scanner))
+                    scanner.Init(conveyorData.pullDuration);
 
                 follower.onEndReached += _ =>
                 {

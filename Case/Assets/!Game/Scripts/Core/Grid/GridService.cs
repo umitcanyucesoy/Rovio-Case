@@ -9,7 +9,8 @@ namespace _Game.Scripts.Core.Grid
     {
         [Title("Settings")]
         [SerializeField] private ProductData productData;
-        [SerializeField] private GridData gridData;
+        [SerializeField] private Transform gridContainer;
+        [SerializeField] private float cellSize;
         
         private LevelData _currentLevelData;
         private Product[,] _gridState;
@@ -17,8 +18,8 @@ namespace _Game.Scripts.Core.Grid
         private int _gridHeight;
         
         public Vector2Int GetGridDimensions() => new(_gridWidth, _gridHeight);
-        public float GetCellSize() => gridData.cellSize;
-        public Transform GetGridRoot() => gridData.gridContainer;
+        public float GetCellSize() => cellSize;
+        public Transform GetGridRoot() => gridContainer;
 
         public void InitGrid(LevelData levelData)
         {
@@ -35,8 +36,8 @@ namespace _Game.Scripts.Core.Grid
             _gridHeight = _currentLevelData.GridMatrix.GetLength(1);
             _gridState = new Product[_gridWidth, _gridHeight];
 
-            var offsetX = (_gridWidth - 1) * gridData.cellSize / 2f;
-            var offsetZ = (_gridHeight - 1) * gridData.cellSize / 2f;
+            var offsetX = (_gridWidth - 1) * cellSize / 2f;
+            var offsetZ = (_gridHeight - 1) * cellSize / 2f;
 
             for (int y = 0; y < _gridHeight; y++)
             {
@@ -45,9 +46,9 @@ namespace _Game.Scripts.Core.Grid
                     var productColor = _currentLevelData.GridMatrix[x, y];
                     if (productColor == ProductColor.Null) continue;
 
-                    Vector3 position = new Vector3(x * gridData.cellSize - offsetX, 0, -y * gridData.cellSize + offsetZ);
-                    var product = Instantiate(productData.productPrefab, gridData.gridContainer.position + position,
-                        Quaternion.identity, gridData.gridContainer);
+                    Vector3 position = new Vector3(x * cellSize - offsetX, 0, -y * cellSize + offsetZ);
+                    var product = Instantiate(productData.productPrefab, gridContainer.position + position,
+                        Quaternion.identity, gridContainer);
                     product.name = $"Product_{x},{y}_{productColor}";
 
                     var material = productData.GetMaterial(productColor);
@@ -70,11 +71,11 @@ namespace _Game.Scripts.Core.Grid
             for (var y = start; y != end; y += step)
             {
                 var product = _gridState[column, y];
-                if (product && product.Color == color)
-                {
-                    _gridState[column, y] = null;
-                    return product;
-                }
+                if (product == null) continue;
+                if (product.Color != color) return null;
+                
+                _gridState[column, y] = null;
+                return product;
             }
 
             return null;
@@ -92,11 +93,11 @@ namespace _Game.Scripts.Core.Grid
             for (var x = start; x != end; x += step)
             {
                 var product = _gridState[x, row];
-                if (product && product.Color == color)
-                {
-                    _gridState[x, row] = null;
-                    return product;
-                }
+                if (product == null) continue;
+                if (product.Color != color) return null;
+                
+                _gridState[x, row] = null;
+                return product;
             }
 
             return null;
@@ -105,8 +106,8 @@ namespace _Game.Scripts.Core.Grid
         public void ClearGrid()
         {
             _gridState = null;
-            for (int i = gridData.gridContainer.childCount - 1; i >= 0; i--)
-                DestroyImmediate(gridData.gridContainer.GetChild(i).gameObject);
+            for (int i = gridContainer.childCount - 1; i >= 0; i--)
+                DestroyImmediate(gridContainer.GetChild(i).gameObject);
         }
     }
 }
