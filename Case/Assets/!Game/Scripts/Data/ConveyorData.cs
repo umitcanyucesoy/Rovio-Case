@@ -30,5 +30,8 @@ namespace _Game.Scripts.Data
         public int punchVibrato = 8;
         [Range(0f, 1f)]
         public float punchElasticity = 0.6f;
+
+        [Header("Product Pull")]
+        public float pullDuration = 0.3f;
     }
 }

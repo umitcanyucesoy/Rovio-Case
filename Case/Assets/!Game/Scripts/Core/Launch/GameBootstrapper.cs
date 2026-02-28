@@ -1,4 +1,3 @@
-using _Game.Scripts.Core.Conveyor;
 using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.Grid;
 using _Game.Scripts.Core.Input;
@@ -12,14 +11,13 @@ namespace _Game.Scripts.Core.Launch
     public class GameBootstrapper : MonoBehaviour
     {
         [Title("Controllers")]
-        [SerializeField] private GridController gridController;
         [SerializeField] private LevelController levelController;
         [SerializeField] private CubeController cubeController;
         
         [Title("Services")]
         [SerializeField] private InputService inputService;
+        [SerializeField] private GridService gridService;
         
-        private IGridProvider _gridProvider;
         private ILevelProvider _levelProvider;
         private ICubeProvider _cubeProvider;
 
@@ -31,6 +29,7 @@ namespace _Game.Scripts.Core.Launch
         private void OnDestroy()
         {
             ServiceLocator.Unregister<IInputService>();
+            ServiceLocator.Unregister<IGridService>();
         }
 
         private void Start()
@@ -41,15 +40,15 @@ namespace _Game.Scripts.Core.Launch
         private void Setup()
         {
             ServiceLocator.Register<IInputService>(inputService);
+            ServiceLocator.Register<IGridService>(gridService);
             
-            _gridProvider = gridController;
             _levelProvider = levelController;
             _cubeProvider = cubeController;
         }
 
         private void InitializeGame()
         {
-            _levelProvider.Init(_gridProvider, _cubeProvider);
+            _levelProvider.Init(_cubeProvider);
             inputService.Init();
         }
     }

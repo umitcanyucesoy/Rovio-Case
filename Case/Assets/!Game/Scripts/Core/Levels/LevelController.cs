@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using _Game.Scripts.Core.Conveyor;
 using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.Grid;
 using _Game.Scripts.Data;
 using _Game.Scripts.Events;
+using _Game.Scripts.Services;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -18,12 +18,10 @@ namespace _Game.Scripts.Core.Levels
         [ReadOnly, ShowInInspector]
         private int _currentLevelIndex = 0;
         
-        private IGridProvider _gridProvider;
         private ICubeProvider _cubeProvider;
 
-        public void Init(IGridProvider gridProvider, ICubeProvider cubeProvider)
+        public void Init(ICubeProvider cubeProvider)
         {
-            _gridProvider = gridProvider;
             _cubeProvider = cubeProvider;
             LoadLevel();
         }
@@ -37,7 +35,8 @@ namespace _Game.Scripts.Core.Levels
             }
 
             var levelData = levels[_currentLevelIndex];
-            _gridProvider.InitGrid(levelData);
+            
+            ServiceLocator.Get<IGridService>().InitGrid(levelData);
             _cubeProvider.InitCubes(levelData);
             
             EventBus.Publish(new LevelLoadedEvent(levelData));

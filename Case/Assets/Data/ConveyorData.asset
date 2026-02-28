@@ -18,5 +18,14 @@ MonoBehaviour:
   endGapCells: 1
   yHeight: 0
   straightStepCells: 1
-  followSpeed: 5
+  followSpeed: 7
   startPercent: 0
+  motionOffset: {x: 0, y: 1}
+  jumpPower: 1.5
+  jumpDuration: 0.5
+  jumpCount: 1
+  punchScale: {x: 0.15, y: -0.3, z: 0.15}
+  punchDuration: 0.35
+  punchVibrato: 8
+  punchElasticity: 0.6
+  pullDuration: 0.3
