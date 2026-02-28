@@ -52,6 +52,12 @@ namespace _Game.Scripts.Core.Cubes
 
             while (!token.IsCancellationRequested)
             {
+                if (_cube.State != CubeState.OnConveyor)
+                {
+                    await UniTask.Yield(PlayerLoopTiming.Update, token);
+                    continue;
+                }
+
                 var pos = transform.position;
                 var edge = DetectEdge(pos);
 

@@ -140,7 +140,6 @@ namespace _Game.Scripts.Core.Cubes
         private void PlaceCubeOnConveyor(Cube cube)
         {
             cube.transform.SetParent(null);
-            cube.SetState(CubeState.OnConveyor);
 
             var startPos = spline.EvaluatePosition(conveyorData.startPercent);
             var targetPos = startPos + new Vector3(0f, conveyorData.motionOffset.y, 0f);
@@ -152,6 +151,8 @@ namespace _Game.Scripts.Core.Cubes
 
             seq.AppendCallback(() =>
             {
+                cube.SetState(CubeState.OnConveyor);
+
                 var follower = cube.gameObject.AddComponent<SplineFollower>();
                 follower.spline = spline;
                 follower.followMode = SplineFollower.FollowMode.Uniform;
