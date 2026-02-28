@@ -52,7 +52,7 @@ namespace _Game.Scripts.Data
             };
 
             UnityEditor.EditorGUI.DrawRect(rect, color);
-            UnityEditor.EditorGUI.LabelField(rect, value.ToString(), new GUIStyle { alignment = TextAnchor.MiddleCenter, normal = { textColor = Color.white } });
+            UnityEditor.EditorGUI.LabelField(rect, value.ToString(), new GUIStyle { alignment = TextAnchor.MiddleCenter, normal = { textColor = Color.black } });
 
             return value;
         }
