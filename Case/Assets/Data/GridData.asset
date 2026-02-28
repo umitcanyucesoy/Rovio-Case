@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: GridData
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Scripts.Data.GridData
   gridContainer: {fileID: 0}
-  cellSize: 1
+  cellSize: 0.75

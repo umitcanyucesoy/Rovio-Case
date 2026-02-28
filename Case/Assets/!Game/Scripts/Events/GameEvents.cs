@@ -1,3 +1,4 @@
+using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Data;
 
 namespace _Game.Scripts.Events
@@ -9,6 +10,16 @@ namespace _Game.Scripts.Events
         public LevelLoadedEvent(LevelData levelData)
         {
             LevelData = levelData;
+        }
+    }
+
+    public readonly struct CubeClickedEvent : IEvent
+    {
+        public readonly Cube Cube;
+
+        public CubeClickedEvent(Cube cube)
+        {
+            Cube = cube;
         }
     }
 }

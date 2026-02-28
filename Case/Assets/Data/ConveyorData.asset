@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: ConveyorData
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Scripts.Data.ConveyorData
   paddingCells: 1.5
-  cornerRadiusCells: 0.5
-  cornerSubdivisions: 4
+  cornerRadiusCells: 0.75
+  cornerSubdivisions: 15
   endGapCells: 1
   yHeight: 0
   straightStepCells: 1
+  followSpeed: 5
+  startPercent: 0

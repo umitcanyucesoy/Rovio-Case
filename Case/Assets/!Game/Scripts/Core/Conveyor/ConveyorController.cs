@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.Grid;
 using _Game.Scripts.Data;
 using _Game.Scripts.Events;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Dreamteck.Splines;
@@ -16,9 +18,20 @@ namespace _Game.Scripts.Core.Conveyor
         [SerializeField] private GridData gridData;
         [SerializeField] private ConveyorData conveyorData;
 
-        private void OnEnable() => EventBus.Subscribe<LevelLoadedEvent>(OnLevelLoaded);
-        private void OnDisable() => EventBus.Unsubscribe<LevelLoadedEvent>(OnLevelLoaded);
+        private void OnEnable()
+        {
+            EventBus.Subscribe<LevelLoadedEvent>(OnLevelLoaded);
+            EventBus.Subscribe<CubeClickedEvent>(OnCubeClicked);
+        }
+
+        private void OnDisable()
+        {
+            EventBus.Unsubscribe<LevelLoadedEvent>(OnLevelLoaded);
+            EventBus.Unsubscribe<CubeClickedEvent>(OnCubeClicked);
+        }
+
         private void OnLevelLoaded(LevelLoadedEvent handle) => Build(handle.LevelData);
+        private void OnCubeClicked(CubeClickedEvent handle) => PlaceCubeOnConveyor(handle.Cube);
         
         private void Build(LevelData levelData)
         {
@@ -59,6 +72,45 @@ namespace _Game.Scripts.Core.Conveyor
 
             spline.SetPoints(points);
             spline.Rebuild();
+        }
+
+        private void PlaceCubeOnConveyor(Cube cube)
+        {
+            cube.transform.SetParent(null);
+
+            var startPos = spline.EvaluatePosition(conveyorData.startPercent);
+            var targetPos = startPos + new Vector3(0f, conveyorData.motionOffset.y, 0f);
+
+            var seq = DOTween.Sequence();
+
+            seq.Append(cube.transform.DOJump(targetPos, conveyorData.jumpPower, conveyorData.jumpCount, conveyorData.jumpDuration)
+                .SetEase(Ease.InOutQuad));
+
+            seq.AppendCallback(() =>
+            {
+                var follower = cube.gameObject.AddComponent<SplineFollower>();
+                follower.spline = spline;
+                follower.followMode = SplineFollower.FollowMode.Uniform;
+                follower.followSpeed = conveyorData.followSpeed;
+                follower.motion.rotationOffset = new Vector3(0f, 90f, 0f);
+                follower.motion.offset = conveyorData.motionOffset;
+                follower.SetPercent(conveyorData.startPercent);
+                follower.follow = true;
+
+                follower.onEndReached += _ =>
+                {
+                    follower.follow = false;
+                    Debug.Log($"[ConveyorController] Cube reached end: {cube.name}");
+                };
+            });
+
+            seq.Append(cube.transform.DOPunchScale(
+                conveyorData.punchScale,
+                conveyorData.punchDuration,
+                conveyorData.punchVibrato,
+                conveyorData.punchElasticity));
+
+            Debug.Log($"[ConveyorController] Cube placed on conveyor: {cube.name}");
         }
 
         private SplinePoint[] BuildOpenRoundedPerimeterPoints(
