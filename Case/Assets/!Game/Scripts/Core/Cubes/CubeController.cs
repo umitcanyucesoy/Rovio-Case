@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using _Game.Scripts.Core.Conveyor;
+using _Game.Scripts.Core.Slots;
 using _Game.Scripts.Data;
 using _Game.Scripts.Enums;
 using _Game.Scripts.Events;
@@ -36,6 +37,7 @@ namespace _Game.Scripts.Core.Cubes
         [SerializeField] private SplineComputer spline;
         [SerializeField] private ConveyorData conveyorData;
 
+        private ISlotProvider _slotProvider;
         private readonly List<List<Cube>> _spawnedCubes = new();
 
         private void OnDisable()
@@ -43,10 +45,9 @@ namespace _Game.Scripts.Core.Cubes
             EventBus.Unsubscribe<CubeClickedEvent>(OnCubeClicked);
         }
 
-        private void OnCubeClicked(CubeClickedEvent handle) => PlaceCubeOnConveyor(handle.Cube);
-
-        public void InitCubes(LevelData levelData)
+        public void InitCubes(LevelData levelData, ISlotProvider slotProvider)
         {
+            _slotProvider = slotProvider;
             ClearCubes();
             GenerateCubes(levelData.cubeRows);
             EventBus.Subscribe<CubeClickedEvent>(OnCubeClicked);
@@ -77,10 +78,69 @@ namespace _Game.Scripts.Core.Cubes
                 _spawnedCubes.Add(row);
             }
         }
+        
+        private void OnCubeClicked(CubeClickedEvent handle)
+        {
+            var cube = handle.Cube;
+
+            switch (cube.State)
+            {
+                case CubeState.InQueue:
+                    HandleQueueClick(cube);
+                    break;
+                case CubeState.InSlot:
+                    HandleSlotClick(cube);
+                    break;
+                case CubeState.OnConveyor:
+                    break;
+            }
+        }
+
+        private void HandleQueueClick(Cube cube)
+        {
+            var foundRow = -1;
+            
+            for (int r = 0; r < _spawnedCubes.Count; r++)
+            {
+                var row = _spawnedCubes[r];
+                if (row.Count > 0 && Equals(row[0], cube))
+                {
+                    foundRow = r;
+                    break;
+                }
+            }
+
+            if (foundRow < 0) return;
+
+            _spawnedCubes[foundRow].RemoveAt(0);
+            PlaceCubeOnConveyor(cube);
+            ShiftColumnForward(foundRow);
+        }
+
+        private void HandleSlotClick(Cube cube)
+        {
+            _slotProvider.RemoveFromSlot(cube);
+            PlaceCubeOnConveyor(cube);
+        }
+
+        private void ShiftColumnForward(int rowIndex)
+        {
+            var row = _spawnedCubes[rowIndex];
+            if (row.Count == 0) return;
+
+            var offset = (_spawnedCubes.Count - 1) * spacing / 2f;
+
+            for (int i = 0; i < row.Count; i++)
+            {
+                var targetPos = cubeContainer.position + new Vector3((rowIndex * spacing) - offset, 0, -i * spacing);
+                row[i].transform.DOMove(targetPos, conveyorData.shiftDuration).SetEase(Ease.OutQuad);
+            }
+        }
 
         private void PlaceCubeOnConveyor(Cube cube)
         {
             cube.transform.SetParent(null);
+            cube.SetState(CubeState.OnConveyor);
 
             var startPos = spline.EvaluatePosition(conveyorData.startPercent);
             var targetPos = startPos + new Vector3(0f, conveyorData.motionOffset.y, 0f);
@@ -107,6 +167,8 @@ namespace _Game.Scripts.Core.Cubes
                 follower.onEndReached += _ =>
                 {
                     follower.follow = false;
+                    Destroy(follower);
+                    _slotProvider.TryPlaceInSlot(cube);
                 };
             });
 
@@ -127,4 +189,3 @@ namespace _Game.Scripts.Core.Cubes
         }
     }
 }
-

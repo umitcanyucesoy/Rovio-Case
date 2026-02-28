@@ -33,5 +33,13 @@ namespace _Game.Scripts.Data
 
         [Header("Product Pull")]
         public float pullDuration = 0.3f;
+
+        [Header("Column Shift")]
+        public float shiftDuration = 0.25f;
+
+        [Header("Slot Animation")]
+        public float slotJumpPower = 1.5f;
+        public float slotJumpDuration = 0.5f;
+        public float slotRotateDuration = 0.3f;
     }
 }

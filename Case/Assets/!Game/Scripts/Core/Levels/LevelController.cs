@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.Grid;
+using _Game.Scripts.Core.Slots;
 using _Game.Scripts.Data;
 using _Game.Scripts.Events;
 using _Game.Scripts.Services;
@@ -19,10 +20,12 @@ namespace _Game.Scripts.Core.Levels
         private int _currentLevelIndex = 0;
         
         private ICubeProvider _cubeProvider;
+        private ISlotProvider _slotProvider;
 
-        public void Init(ICubeProvider cubeProvider)
+        public void Init(ICubeProvider cubeProvider, ISlotProvider slotProvider)
         {
             _cubeProvider = cubeProvider;
+            _slotProvider = slotProvider;
             LoadLevel();
         }
 
@@ -37,7 +40,7 @@ namespace _Game.Scripts.Core.Levels
             var levelData = levels[_currentLevelIndex];
             
             ServiceLocator.Get<IGridService>().InitGrid(levelData);
-            _cubeProvider.InitCubes(levelData);
+            _cubeProvider.InitCubes(levelData, _slotProvider);
             
             EventBus.Publish(new LevelLoadedEvent(levelData));
         }
