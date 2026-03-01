@@ -16,33 +16,38 @@ namespace _Game.Scripts.Data
         [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "name")]
         public List<Material> colorMaterials = new();
         
-        [Header("Path Follow")]
+        [Title("Path Follow")]
         public float followSpeed;
         [Range(0f, 1f)]
         public float startPercent = 0f;
         public Vector2 motionOffset = new Vector2(0f, 1f);
+
+        [Title("Destroy Animation")] 
+        public float moveYDuration;
+        public float rotateDuration;
+        public float scaleDuration;
         
-        [Header("Jump Animation")]
+        [Title("Jump Animation")]
         public float jumpPower;
         public float jumpDuration;
         public int jumpCount;
         
-        [Header("Squash Animation")]
+        [Title("Squash Animation")]
         public Vector3 punchScale;
         public float punchDuration;
         public int punchVibrato;
         public float punchElasticity;
         
-        [Header("Punch Rotation")]
+        [Title("Punch Rotation")]
         public Vector3 punchRotation;
         public float punchRotDuration;
         public int punchRotVibrato;
         public float punchRotElasticity;
         
-        [Header("Product Pull")]
+        [Title("Product Pull")]
         public float pullDuration = 0.3f;
 
-        [Header("Column Shift")]
+        [Title("Column Shift")]
         public float shiftDuration = 0.25f;
 
         public Material GetMaterial(CubeColor color)

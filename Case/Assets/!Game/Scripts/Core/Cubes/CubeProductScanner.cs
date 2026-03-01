@@ -143,7 +143,10 @@ namespace _Game.Scripts.Core.Cubes
             }
 
             if (product)
+            {
+                _cube.ConsumePoint();
                 PullProduct(product).Forget();
+            }
         }
 
         private async UniTaskVoid PullProduct(Product product)

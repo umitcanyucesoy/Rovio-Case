@@ -33,7 +33,7 @@ namespace _Game.Scripts.Core.Slots
 
         private async UniTaskVoid PlaceInSlotAsync(Cube cube, int index)
         {
-            var targetPos = slotTransforms[index].position + new Vector3(0f, .5f, 0f);
+            var targetPos = slotTransforms[index].position + new Vector3(0f, .65f, 0f);
             var targetRot = slotTransforms[index].rotation;
 
             var jumpTween = cube.transform

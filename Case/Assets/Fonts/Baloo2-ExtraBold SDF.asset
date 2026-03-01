@@ -2741,12 +2741,12 @@ Material:
     - _OutlineSoftness: 0
     - _OutlineUVSpeedX: 0
     - _OutlineUVSpeedY: 1
-    - _OutlineWidth: 0.6
+    - _OutlineWidth: 0.497
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
-    - _ScaleRatioA: 0.64724916
+    - _ScaleRatioA: 0.70353174
     - _ScaleRatioB: 0.26041666
-    - _ScaleRatioC: 0.13020833
+    - _ScaleRatioC: 0.26041666
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -2759,8 +2759,8 @@ Material:
     - _StencilWriteMask: 255
     - _TextureHeight: 512
     - _TextureWidth: 512
-    - _UnderlayDilate: 1
-    - _UnderlayOffsetX: -0.096
+    - _UnderlayDilate: -0.7
+    - _UnderlayOffsetX: 0.15
     - _UnderlayOffsetY: -1
     - _UnderlaySoftness: 0
     - _VertexOffsetX: 0
@@ -2791,7 +2791,7 @@ Texture2D:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000
   m_IsAlphaChannelOptional: 0
-  serializedVersion: 3
+  serializedVersion: 4
   m_Width: 512
   m_Height: 512
   m_CompleteImageSize: 262144

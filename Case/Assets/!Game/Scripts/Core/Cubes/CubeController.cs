@@ -37,10 +37,12 @@ namespace _Game.Scripts.Core.Cubes
 
         private ISlotProvider _slotProvider;
         private readonly List<List<Cube>> _spawnedCubes = new();
+        [ReadOnly, ShowInInspector] private readonly List<Cube> _allCubes = new();
 
         private void OnDisable()
         {
             EventBus.Unsubscribe<CubeClickedEvent>(OnCubeClicked);
+            EventBus.Unsubscribe<CubeDestroyedEvent>(OnCubeDestroyed);
         }
 
         public void InitCubes(LevelData levelData, ISlotProvider slotProvider)
@@ -49,6 +51,7 @@ namespace _Game.Scripts.Core.Cubes
             ClearCubes();
             GenerateCubes(levelData.cubeRows);
             EventBus.Subscribe<CubeClickedEvent>(OnCubeClicked);
+            EventBus.Subscribe<CubeDestroyedEvent>(OnCubeDestroyed);
         }
 
         private void GenerateCubes(List<ColumnData> rows)
@@ -68,8 +71,10 @@ namespace _Game.Scripts.Core.Cubes
                     var cube = Instantiate(cubeVisualData.cubePrefab, cubeContainer.position + position, Quaternion.identity, cubeContainer);
                     var material = cubeVisualData.GetMaterial(cubeData.color);
                     cube.SetColor(cubeData.color, material);
+                    cube.SetValue(cubeData.value);
                     cube.name = $"Cube_R{rowIndex}_C{colIndex} (Value: {cubeData.value})";
 
+                    _allCubes.Add(cube);
                     row.Add(cube);
                 }
 
@@ -173,9 +178,16 @@ namespace _Game.Scripts.Core.Cubes
             cube.Visual.DOPunchRotation(cubeVisualData.punchRotation, cubeVisualData.punchRotDuration, cubeVisualData.punchRotVibrato, cubeVisualData.punchRotElasticity);
         }
 
+        private void OnCubeDestroyed(CubeDestroyedEvent e)
+        {
+            _allCubes.Remove(e.Cube);
+            if (_allCubes.Count <= 0) EventBus.Publish(new GameWinEvent());
+        }
+
         public void ClearCubes()
         {
             _spawnedCubes.Clear();
+            _allCubes.Clear();
             
             if (!cubeContainer) return;
             for (int i = cubeContainer.childCount - 1; i >= 0; i--)
