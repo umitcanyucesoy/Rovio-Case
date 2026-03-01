@@ -12,28 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c10792ecbb4641b238d29ddadb85f1, type: 3}
   m_Name: ConveyorData
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Scripts.Data.ConveyorData
-  paddingCells: 1.5
+  paddingCells: 3
   cornerRadiusCells: 0.75
-  cornerSubdivisions: 15
-  endGapCells: 1
+  cornerSubdivisions: 10
+  endGapCells: 0.35
   yHeight: 0
   straightStepCells: 1
-  followSpeed: 7
-  startPercent: 0
-  motionOffset: {x: 0, y: 1}
-  jumpPower: 2
-  jumpDuration: 0.25
-  jumpCount: 1
-  punchScale: {x: 0.25, y: -0.8, z: 0.25}
-  punchDuration: 0.6
-  punchVibrato: 8
-  punchElasticity: 15
-  punchRotation: {x: 2.5, y: 0, z: -2.5}
-  punchRotDuration: 0.77
-  punchRotVibrato: 8
-  punchRotElasticity: 15
-  pullDuration: 0.3
-  shiftDuration: 0.25
-  slotJumpPower: 1.5
-  slotJumpDuration: 0.5
-  slotRotateDuration: 0.3

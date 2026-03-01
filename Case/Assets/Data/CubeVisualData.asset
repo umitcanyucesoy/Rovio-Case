@@ -21,7 +21,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: e863b49a8536f4612b13a7b7421e5bf4, type: 2}
   followSpeed: 7
   startPercent: 0
-  motionOffset: {x: 0, y: 1}
+  motionOffset: {x: 0, y: 0.5}
   jumpPower: 2
   jumpDuration: 0.25
   jumpCount: 1
@@ -33,5 +33,5 @@ MonoBehaviour:
   punchRotDuration: 0.6
   punchRotVibrato: 8
   punchRotElasticity: 15
-  pullDuration: 0.3
+  pullDuration: 0.15
   shiftDuration: 0.3
