@@ -92,6 +92,12 @@ namespace _Game.Scripts.Core.Cubes
 
                 _spawnedCubes.Add(row);
             }
+
+            foreach (var row in _spawnedCubes)
+            {
+                if (row.Count > 0)
+                    row[0].SetOutline(true);
+            }
         }
         
         private void OnCubeClicked(CubeClickedEvent handle)
@@ -107,6 +113,7 @@ namespace _Game.Scripts.Core.Cubes
                     HandleSlotClick(cube);
                     break;
                 case CubeState.OnConveyor:
+                case CubeState.MovingToSlot:
                     break;
             }
         }
@@ -128,6 +135,7 @@ namespace _Game.Scripts.Core.Cubes
             if (foundRow < 0) return;
 
             _spawnedCubes[foundRow].RemoveAt(0);
+            cube.SetOutline(false);
             PlaceCubeOnConveyor(cube).Forget();
             ShiftColumnForward(foundRow);
         }
@@ -135,6 +143,7 @@ namespace _Game.Scripts.Core.Cubes
         private void HandleSlotClick(Cube cube)
         {
             _slotProvider.RemoveFromSlot(cube);
+            cube.SetOutline(false);
             PlaceCubeOnConveyor(cube).Forget();
         }
 
@@ -142,6 +151,8 @@ namespace _Game.Scripts.Core.Cubes
         {
             var row = _spawnedCubes[rowIndex];
             if (row.Count == 0) return;
+
+            row[0].SetOutline(true);
 
             var offset = (_spawnedCubes.Count - 1) * spacing / 2f;
 
@@ -190,7 +201,7 @@ namespace _Game.Scripts.Core.Cubes
                 }
             };
 
-            cube.transform.DOPunchScale(cubeVisualData.punchScale, cubeVisualData.punchDuration, cubeVisualData.punchVibrato, cubeVisualData.punchElasticity);
+            cube.Visual.DOPunchScale(cubeVisualData.punchScale, cubeVisualData.punchDuration, cubeVisualData.punchVibrato, cubeVisualData.punchElasticity);
             cube.Visual.DOPunchRotation(cubeVisualData.punchRotation, cubeVisualData.punchRotDuration, cubeVisualData.punchRotVibrato, cubeVisualData.punchRotElasticity);
         }
 

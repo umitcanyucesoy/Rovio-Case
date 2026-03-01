@@ -19,6 +19,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 3b7f60337a482442e817182a01a7d4e3, type: 2}
   - {fileID: 2100000, guid: 87db132951455417e8bedf350b2fef12, type: 2}
   - {fileID: 2100000, guid: e863b49a8536f4612b13a7b7421e5bf4, type: 2}
+  outlineMaterial: {fileID: 2100000, guid: 82d755344726442f796eeb57973edc15, type: 2}
   followSpeed: 8
   startPercent: 0
   motionOffset: {x: 0, y: 0.5}
@@ -28,7 +29,7 @@ MonoBehaviour:
   jumpPower: 2
   jumpDuration: 0.25
   jumpCount: 1
-  punchScale: {x: 0.25, y: -0.8, z: 0.25}
+  punchScale: {x: 0.25, y: -0.4, z: 0.25}
   punchDuration: 0.6
   punchVibrato: 8
   punchElasticity: 15

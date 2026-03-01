@@ -4,6 +4,7 @@ namespace _Game.Scripts.Enums
     {
         InQueue,
         OnConveyor,
+        MovingToSlot,
         InSlot
     }
 }

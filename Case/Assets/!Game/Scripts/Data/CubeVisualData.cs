@@ -15,6 +15,7 @@ namespace _Game.Scripts.Data
         [Title("Materials")]
         [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "name")]
         public List<Material> colorMaterials = new();
+        public Material outlineMaterial;
         
         [Title("Path Follow")]
         public float followSpeed;

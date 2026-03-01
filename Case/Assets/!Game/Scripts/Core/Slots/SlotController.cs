@@ -25,7 +25,7 @@ namespace _Game.Scripts.Core.Slots
             if (index < 0) return false;
 
             _slotOccupants[index] = cube;
-            cube.SetState(CubeState.InSlot);
+            cube.SetState(CubeState.MovingToSlot);
 
             PlaceInSlotAsync(cube, index).Forget();
             return true;
@@ -33,7 +33,7 @@ namespace _Game.Scripts.Core.Slots
 
         private async UniTaskVoid PlaceInSlotAsync(Cube cube, int index)
         {
-            var targetPos = slotTransforms[index].position + new Vector3(0f, .65f, 0f);
+            var targetPos = slotTransforms[index].position + new Vector3(0f, .7f, 0f);
             var targetRot = slotTransforms[index].rotation;
 
             var jumpTween = cube.transform
@@ -46,7 +46,10 @@ namespace _Game.Scripts.Core.Slots
 
             await jumpTween.AsyncWaitForCompletion();
 
-            cube.transform.DOPunchScale(cubeData.punchScale, cubeData.punchDuration, cubeData.punchVibrato, cubeData.punchElasticity);
+            cube.SetState(CubeState.InSlot);
+            cube.SetOutline(true);
+
+            cube.Visual.DOPunchScale(cubeData.punchScale, cubeData.punchDuration, cubeData.punchVibrato, cubeData.punchElasticity);
             cube.Visual.DOPunchRotation(cubeData.punchRotation, cubeData.punchRotDuration, cubeData.punchRotVibrato, cubeData.punchRotElasticity);
         }
 

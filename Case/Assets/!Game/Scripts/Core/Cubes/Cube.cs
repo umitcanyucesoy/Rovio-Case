@@ -39,6 +39,20 @@ namespace _Game.Scripts.Core.Cubes
         public void SetState(CubeState state) => State = state;
         private void UpdateValueText() => valueText.text = Value.ToString();
 
+        public void SetOutline(bool isActive)
+        {
+            var mats = renderer.sharedMaterials;
+
+            if (isActive && mats.Length < 2 && cubeData.outlineMaterial)
+            {
+                renderer.sharedMaterials = new[] { mats[0], cubeData.outlineMaterial };
+            }
+            else if (!isActive && mats.Length > 1)
+            {
+                renderer.sharedMaterials = new[] { mats[0] };
+            }
+        }
+
         public void ConsumePoint()
         {
             if (_isDestroying) return;
