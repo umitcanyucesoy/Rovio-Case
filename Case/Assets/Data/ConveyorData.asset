@@ -21,11 +21,19 @@ MonoBehaviour:
   followSpeed: 7
   startPercent: 0
   motionOffset: {x: 0, y: 1}
-  jumpPower: 1.5
-  jumpDuration: 0.5
+  jumpPower: 2
+  jumpDuration: 0.25
   jumpCount: 1
-  punchScale: {x: 0.15, y: -0.3, z: 0.15}
-  punchDuration: 0.35
+  punchScale: {x: 0.25, y: -0.8, z: 0.25}
+  punchDuration: 0.6
   punchVibrato: 8
-  punchElasticity: 0.6
+  punchElasticity: 15
+  punchRotation: {x: 2.5, y: 0, z: -2.5}
+  punchRotDuration: 0.77
+  punchRotVibrato: 8
+  punchRotElasticity: 15
   pullDuration: 0.3
+  shiftDuration: 0.25
+  slotJumpPower: 1.5
+  slotJumpDuration: 0.5
+  slotRotateDuration: 0.3

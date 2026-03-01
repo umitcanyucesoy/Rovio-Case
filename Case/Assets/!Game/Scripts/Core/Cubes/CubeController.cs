@@ -5,6 +5,7 @@ using _Game.Scripts.Core.Slots;
 using _Game.Scripts.Data;
 using _Game.Scripts.Enums;
 using _Game.Scripts.Events;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Dreamteck.Splines;
 using Sirenix.OdinInspector;
@@ -29,13 +30,10 @@ namespace _Game.Scripts.Core.Cubes
     public class CubeController : MonoBehaviour, ICubeProvider
     {
         [Title("Settings")]
+        [SerializeField] private SplineComputer spline;
         [SerializeField] private CubeVisualData cubeVisualData;
         [SerializeField] private Transform cubeContainer;
         [SerializeField] private float spacing = 1.1f;
-
-        [Title("Conveyor")]
-        [SerializeField] private SplineComputer spline;
-        [SerializeField] private ConveyorData conveyorData;
 
         private ISlotProvider _slotProvider;
         private readonly List<List<Cube>> _spawnedCubes = new();
@@ -113,14 +111,14 @@ namespace _Game.Scripts.Core.Cubes
             if (foundRow < 0) return;
 
             _spawnedCubes[foundRow].RemoveAt(0);
-            PlaceCubeOnConveyor(cube);
+            PlaceCubeOnConveyor(cube).Forget();
             ShiftColumnForward(foundRow);
         }
 
         private void HandleSlotClick(Cube cube)
         {
             _slotProvider.RemoveFromSlot(cube);
-            PlaceCubeOnConveyor(cube);
+            PlaceCubeOnConveyor(cube).Forget();
         }
 
         private void ShiftColumnForward(int rowIndex)
@@ -133,51 +131,46 @@ namespace _Game.Scripts.Core.Cubes
             for (int i = 0; i < row.Count; i++)
             {
                 var targetPos = cubeContainer.position + new Vector3((rowIndex * spacing) - offset, 0, -i * spacing);
-                row[i].transform.DOMove(targetPos, conveyorData.shiftDuration).SetEase(Ease.OutQuad);
+                row[i].transform.DOMove(targetPos, cubeVisualData.shiftDuration).SetEase(Ease.OutQuad);
             }
         }
 
-        private void PlaceCubeOnConveyor(Cube cube)
+        private async UniTaskVoid PlaceCubeOnConveyor(Cube cube)
         {
             cube.transform.SetParent(null);
 
-            var startPos = spline.EvaluatePosition(conveyorData.startPercent);
-            var targetPos = startPos + new Vector3(0f, conveyorData.motionOffset.y, 0f);
+            var startPos = spline.EvaluatePosition(cubeVisualData.startPercent);
+            var targetPos = startPos + new Vector3(0f, cubeVisualData.motionOffset.y, 0f);
 
-            var seq = DOTween.Sequence();
+            await cube.transform
+                .DOJump(targetPos, cubeVisualData.jumpPower, cubeVisualData.jumpCount, cubeVisualData.jumpDuration)
+                .SetSpeedBased()
+                .SetEase(Ease.InOutQuad)
+                .AsyncWaitForCompletion();
 
-            seq.Append(cube.transform.DOJump(targetPos, conveyorData.jumpPower, conveyorData.jumpCount, conveyorData.jumpDuration)
-                .SetEase(Ease.InOutQuad));
+            cube.SetState(CubeState.OnConveyor);
 
-            seq.AppendCallback(() =>
+            var follower = cube.gameObject.AddComponent<SplineFollower>();
+            follower.spline = spline;
+            follower.followMode = SplineFollower.FollowMode.Uniform;
+            follower.followSpeed = cubeVisualData.followSpeed;
+            follower.motion.rotationOffset = new Vector3(0f, 90f, 0f);
+            follower.motion.offset = cubeVisualData.motionOffset;
+            follower.SetPercent(cubeVisualData.startPercent);
+            follower.follow = true;
+
+            if (cube.TryGetComponent(out CubeProductScanner scanner))
+                scanner.Init(cubeVisualData.pullDuration);
+
+            follower.onEndReached += _ =>
             {
-                cube.SetState(CubeState.OnConveyor);
+                follower.follow = false;
+                Destroy(follower);
+                _slotProvider.TryPlaceInSlot(cube);
+            };
 
-                var follower = cube.gameObject.AddComponent<SplineFollower>();
-                follower.spline = spline;
-                follower.followMode = SplineFollower.FollowMode.Uniform;
-                follower.followSpeed = conveyorData.followSpeed;
-                follower.motion.rotationOffset = new Vector3(0f, 90f, 0f);
-                follower.motion.offset = conveyorData.motionOffset;
-                follower.SetPercent(conveyorData.startPercent);
-                follower.follow = true;
-
-                if (cube.TryGetComponent(out CubeProductScanner scanner))
-                    scanner.Init(conveyorData.pullDuration);
-
-                follower.onEndReached += _ =>
-                {
-                    follower.follow = false;
-                    Destroy(follower);
-                    _slotProvider.TryPlaceInSlot(cube);
-                };
-            });
-
-            seq.Append(cube.transform.DOPunchScale(
-                conveyorData.punchScale,
-                conveyorData.punchDuration,
-                conveyorData.punchVibrato,
-                conveyorData.punchElasticity));
+            cube.transform.DOPunchScale(cubeVisualData.punchScale, cubeVisualData.punchDuration, cubeVisualData.punchVibrato, cubeVisualData.punchElasticity);
+            cube.Visual.DOPunchRotation(cubeVisualData.punchRotation, cubeVisualData.punchRotDuration, cubeVisualData.punchRotVibrato, cubeVisualData.punchRotElasticity);
         }
 
         public void ClearCubes()

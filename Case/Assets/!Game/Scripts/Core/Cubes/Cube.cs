@@ -7,6 +7,7 @@ namespace _Game.Scripts.Core.Cubes
     {
         [SerializeField] private new Renderer renderer;
         
+        public Transform Visual => renderer.transform;
         public CubeColor Color { get; private set; }
         public CubeState State { get; private set; } = CubeState.InQueue;
 

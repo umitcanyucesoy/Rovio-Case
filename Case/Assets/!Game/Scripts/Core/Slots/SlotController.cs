@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Data;
 using _Game.Scripts.Enums;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace _Game.Scripts.Core.Slots
         [SerializeField] private List<Transform> slotTransforms = new();
 
         [Title("Settings")]
-        [SerializeField] private ConveyorData conveyorData;
+        [SerializeField] private CubeVisualData cubeData;
 
         private readonly Cube[] _slotOccupants = new Cube[5];
 
@@ -26,21 +27,27 @@ namespace _Game.Scripts.Core.Slots
             _slotOccupants[index] = cube;
             cube.SetState(CubeState.InSlot);
 
-            var targetPos = slotTransforms[index].position;
+            PlaceInSlotAsync(cube, index).Forget();
+            return true;
+        }
+
+        private async UniTaskVoid PlaceInSlotAsync(Cube cube, int index)
+        {
+            var targetPos = slotTransforms[index].position + new Vector3(0f, .5f, 0f);
             var targetRot = slotTransforms[index].rotation;
 
-            var seq = DOTween.Sequence();
-            seq.Append(cube.transform.DOJump(targetPos, conveyorData.slotJumpPower, 1, conveyorData.slotJumpDuration)
-                .SetEase(Ease.InOutQuad));
-            seq.Join(cube.transform.DORotateQuaternion(targetRot, conveyorData.slotRotateDuration)
-                .SetEase(Ease.InOutQuad));
-            seq.Append(cube.transform.DOPunchScale(
-                conveyorData.punchScale,
-                conveyorData.punchDuration,
-                conveyorData.punchVibrato,
-                conveyorData.punchElasticity));
+            var jumpTween = cube.transform
+                .DOJump(targetPos, cubeData.jumpPower, cubeData.jumpCount, .35f)
+                .SetSpeedBased()
+                .SetEase(Ease.InOutQuad);
 
-            return true;
+            cube.transform.DORotateQuaternion(targetRot, jumpTween.Duration())
+                .SetEase(Ease.InOutQuad);
+
+            await jumpTween.AsyncWaitForCompletion();
+
+            cube.transform.DOPunchScale(cubeData.punchScale, cubeData.punchDuration, cubeData.punchVibrato, cubeData.punchElasticity);
+            cube.Visual.DOPunchRotation(cubeData.punchRotation, cubeData.punchRotDuration, cubeData.punchRotVibrato, cubeData.punchRotElasticity);
         }
 
         public bool RemoveFromSlot(Cube cube)
