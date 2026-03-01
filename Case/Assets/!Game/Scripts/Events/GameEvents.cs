@@ -22,4 +22,6 @@ namespace _Game.Scripts.Events
     }
 
     public readonly struct GameWinEvent : IEvent { }
+    
+    public readonly struct GameLoseEvent : IEvent { }
 }

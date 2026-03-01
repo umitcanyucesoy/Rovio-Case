@@ -103,7 +103,7 @@ namespace _Game.Scripts.Core.Grid
             return null;
         }
         
-        public void ClearGrid()
+        private void ClearGrid()
         {
             _gridState = null;
             for (int i = gridContainer.childCount - 1; i >= 0; i--)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using _Game.Scripts.Core.Conveyor;
 using _Game.Scripts.Core.Slots;
 using _Game.Scripts.Data;
@@ -39,6 +40,12 @@ namespace _Game.Scripts.Core.Cubes
         private readonly List<List<Cube>> _spawnedCubes = new();
         [ReadOnly, ShowInInspector] private readonly List<Cube> _allCubes = new();
 
+        private void OnEnable()
+        {
+            EventBus.Subscribe<CubeClickedEvent>(OnCubeClicked);
+            EventBus.Subscribe<CubeDestroyedEvent>(OnCubeDestroyed);
+        }
+
         private void OnDisable()
         {
             EventBus.Unsubscribe<CubeClickedEvent>(OnCubeClicked);
@@ -50,8 +57,6 @@ namespace _Game.Scripts.Core.Cubes
             _slotProvider = slotProvider;
             ClearCubes();
             GenerateCubes(levelData.cubeRows);
-            EventBus.Subscribe<CubeClickedEvent>(OnCubeClicked);
-            EventBus.Subscribe<CubeDestroyedEvent>(OnCubeDestroyed);
         }
 
         private void GenerateCubes(List<ColumnData> rows)
@@ -66,6 +71,13 @@ namespace _Game.Scripts.Core.Cubes
                 for (int colIndex = 0; colIndex < columnData.columns.Count; colIndex++)
                 {
                     var cubeData = columnData.columns[colIndex];
+                    
+                    if (cubeData.color == CubeColor.None)
+                    {
+                        Debug.LogWarning($"[CubeController] Cube at R{rowIndex}_C{colIndex} has no color assigned!");
+                        continue;
+                    }
+                    
                     var position = new Vector3((rowIndex * spacing) - offset, 0, -colIndex * spacing);
 
                     var cube = Instantiate(cubeVisualData.cubePrefab, cubeContainer.position + position, Quaternion.identity, cubeContainer);
@@ -171,7 +183,11 @@ namespace _Game.Scripts.Core.Cubes
             {
                 follower.follow = false;
                 Destroy(follower);
-                _slotProvider.TryPlaceInSlot(cube);
+                
+                if (!_slotProvider.TryPlaceInSlot(cube))
+                {
+                    EventBus.Publish(new GameLoseEvent());
+                }
             };
 
             cube.transform.DOPunchScale(cubeVisualData.punchScale, cubeVisualData.punchDuration, cubeVisualData.punchVibrato, cubeVisualData.punchElasticity);
@@ -186,6 +202,13 @@ namespace _Game.Scripts.Core.Cubes
 
         public void ClearCubes()
         {
+            foreach (var cube in _allCubes.Where(cube => cube))
+            {
+                cube.transform.DOKill();
+                cube.Visual.DOKill();
+                Destroy(cube.gameObject);
+            }
+
             _spawnedCubes.Clear();
             _allCubes.Clear();
             

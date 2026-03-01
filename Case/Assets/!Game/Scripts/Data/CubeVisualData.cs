@@ -52,9 +52,9 @@ namespace _Game.Scripts.Data
 
         public Material GetMaterial(CubeColor color)
         {
-            if (colorMaterials == null) return null;
+            if (color == CubeColor.None || colorMaterials == null) return null;
 
-            var index = (int)color;
+            var index = (int)color - 1;
             if (index >= 0 && index < colorMaterials.Count)
                 return colorMaterials[index];
 

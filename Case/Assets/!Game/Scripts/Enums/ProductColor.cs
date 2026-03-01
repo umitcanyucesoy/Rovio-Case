@@ -2,11 +2,11 @@ namespace _Game.Scripts.Enums
 {
     public enum ProductColor
     {
-        Red,
-        Blue,
-        Green,
-        Yellow,
-        Orange,
-        Null
+        Null = 0,
+        Red = 1,
+        Blue = 2,
+        Green = 3,
+        Yellow = 4,
+        Orange = 5
     }
 }

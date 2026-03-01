@@ -5,5 +5,6 @@ namespace _Game.Scripts.Core.Input
     public interface IInputService : IService
     {
         public void Init();
+        public void SetEnabled(bool isEnabled);
     }
 }

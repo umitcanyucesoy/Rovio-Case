@@ -20,7 +20,7 @@ namespace _Game.Scripts.Data
             if (color == ProductColor.Null || colorMaterials == null)
                 return null;
             
-            var index = (int)color;
+            var index = (int)color - 1;
             if (index >= 0 && index < colorMaterials.Count)
                 return colorMaterials[index];
             

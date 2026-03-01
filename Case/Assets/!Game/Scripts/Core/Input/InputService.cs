@@ -10,9 +10,16 @@ namespace _Game.Scripts.Core.Input
         [SerializeField] private Camera mainCamera;
         [SerializeField] private LayerMask cubeLayerMask;
 
+        private bool _isEnabled = true;
+
         public void Init()
         {
             ListenForClicks().Forget();
+        }
+
+        public void SetEnabled(bool isEnabled)
+        {
+            _isEnabled = isEnabled;
         }
 
         private async UniTaskVoid ListenForClicks()
@@ -31,6 +38,8 @@ namespace _Game.Scripts.Core.Input
 
         private void HandleClick(Vector3 screenPosition)
         {
+            if (!_isEnabled) return;
+            
             var ray = mainCamera.ScreenPointToRay(screenPosition);
 
             if (!Physics.Raycast(ray, out var hit, Mathf.Infinity, cubeLayerMask)) return;

@@ -6,5 +6,6 @@ namespace _Game.Scripts.Core.Slots
     {
         public bool TryPlaceInSlot(Cube cube);
         public bool RemoveFromSlot(Cube cube);
+        public void ClearSlots();
     }
 }

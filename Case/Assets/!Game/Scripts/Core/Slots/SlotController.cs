@@ -71,5 +71,11 @@ namespace _Game.Scripts.Core.Slots
 
             return -1;
         }
+
+        public void ClearSlots()
+        {
+            for (int i = 0; i < _slotOccupants.Length; i++)
+                _slotOccupants[i] = null;
+        }
     }
 }

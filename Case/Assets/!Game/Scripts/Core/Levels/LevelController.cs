@@ -38,7 +38,8 @@ namespace _Game.Scripts.Core.Levels
             }
 
             var levelData = levels[_currentLevelIndex];
-            
+
+            _slotProvider.ClearSlots();
             ServiceLocator.Get<IGridService>().InitGrid(levelData);
             _cubeProvider.InitCubes(levelData, _slotProvider);
             
