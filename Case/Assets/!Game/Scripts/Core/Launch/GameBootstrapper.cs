@@ -1,9 +1,11 @@
+using _Game.Scripts.Core.Audio;
 using _Game.Scripts.Core.Conveyor;
 using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.GameFlow;
 using _Game.Scripts.Core.Grid;
 using _Game.Scripts.Core.Input;
 using _Game.Scripts.Core.Levels;
+using _Game.Scripts.Core.Pool;
 using _Game.Scripts.Core.Slots;
 using _Game.Scripts.Core.UI;
 using _Game.Scripts.Services;
@@ -25,6 +27,8 @@ namespace _Game.Scripts.Core.Launch
         [Title("Services")]
         [SerializeField] private InputService inputService;
         [SerializeField] private GridService gridService;
+        [SerializeField] private AudioService audioService;
+        [SerializeField] private PoolService poolService;
         
         private ILevelProvider _levelProvider;
         private ICubeProvider _cubeProvider;
@@ -40,6 +44,8 @@ namespace _Game.Scripts.Core.Launch
         {
             ServiceLocator.Unregister<IInputService>();
             ServiceLocator.Unregister<IGridService>();
+            ServiceLocator.Unregister<IAudioService>();
+            ServiceLocator.Unregister<IPoolService>();
         }
 
         private void Start()
@@ -51,6 +57,8 @@ namespace _Game.Scripts.Core.Launch
         {
             ServiceLocator.Register<IInputService>(inputService);
             ServiceLocator.Register<IGridService>(gridService);
+            ServiceLocator.Register<IAudioService>(audioService);
+            ServiceLocator.Register<IPoolService>(poolService);
             
             _levelProvider = levelController;
             _cubeProvider = cubeController;
@@ -60,9 +68,10 @@ namespace _Game.Scripts.Core.Launch
 
         private void InitializeGame()
         {
+            audioService.Init();
             conveyorController.Init();
-            _levelProvider.Init(_cubeProvider, _slotProvider);
-            gameFlowController.Init(_uiProvider, _levelProvider);
+            _levelProvider.Init(_cubeProvider, _slotProvider, audioService);
+            gameFlowController.Init(_uiProvider, _levelProvider, _cubeProvider);
             inputService.Init();
         }
     }

@@ -51,6 +51,11 @@ namespace _Game.Scripts.Data
         [Title("Column Shift")]
         public float shiftDuration = 0.25f;
 
+        [Title("Queue Fade")]
+        [Range(0f, 1f)]
+        public float fadedAlpha = 0.35f;
+        public float fadeDuration = 0.25f;
+
         public Material GetMaterial(CubeColor color)
         {
             if (color == CubeColor.None || colorMaterials == null) return null;

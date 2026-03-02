@@ -53,6 +53,20 @@ namespace _Game.Scripts.Core.Cubes
             }
         }
 
+        public void SetFade(float alpha, float duration)
+        {
+            valueText.DOKill();
+
+            if (duration <= 0f)
+            {
+                var color = valueText.color;
+                color.a = alpha;
+                valueText.color = color;
+            }
+            else
+                valueText.DOFade(alpha, duration);
+        }
+
         public void ConsumePoint()
         {
             if (_isDestroying) return;

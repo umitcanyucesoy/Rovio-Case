@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using _Game.Scripts.Core.Audio;
 using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.Grid;
 using _Game.Scripts.Core.Slots;
@@ -19,13 +20,15 @@ namespace _Game.Scripts.Core.Levels
         [ReadOnly, ShowInInspector]
         private int _currentLevelIndex = 0;
         
+        private IAudioService _audioService;
         private ICubeProvider _cubeProvider;
         private ISlotProvider _slotProvider;
 
-        public void Init(ICubeProvider cubeProvider, ISlotProvider slotProvider)
+        public void Init(ICubeProvider cubeProvider, ISlotProvider slotProvider, IAudioService audioService)
         {
             _cubeProvider = cubeProvider;
             _slotProvider = slotProvider;
+            _audioService = audioService;
             LoadLevel();
         }
 
@@ -41,7 +44,7 @@ namespace _Game.Scripts.Core.Levels
 
             _slotProvider.ClearSlots();
             ServiceLocator.Get<IGridService>().InitGrid(levelData);
-            _cubeProvider.InitCubes(levelData, _slotProvider);
+            _cubeProvider.Init(levelData, _slotProvider, _audioService);
             
             EventBus.Publish(new LevelLoadedEvent(levelData));
         }

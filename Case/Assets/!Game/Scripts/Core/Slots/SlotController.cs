@@ -46,6 +46,8 @@ namespace _Game.Scripts.Core.Slots
 
             await jumpTween.AsyncWaitForCompletion();
 
+            if (cube == null) return;
+
             cube.SetState(CubeState.InSlot);
             cube.SetOutline(true);
 

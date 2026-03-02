@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using _Game.Scripts.Core.Conveyor;
+using _Game.Scripts.Core.Audio;
 using _Game.Scripts.Core.Slots;
 using _Game.Scripts.Data;
 using _Game.Scripts.Enums;
 using _Game.Scripts.Events;
+using _Game.Scripts.Services;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Dreamteck.Splines;
@@ -36,6 +37,7 @@ namespace _Game.Scripts.Core.Cubes
         [SerializeField] private Transform cubeContainer;
         [SerializeField] private float spacing = 1.1f;
 
+        private IAudioService _audioService;
         private ISlotProvider _slotProvider;
         private readonly List<List<Cube>> _spawnedCubes = new();
         [ReadOnly, ShowInInspector] private readonly List<Cube> _allCubes = new();
@@ -52,9 +54,10 @@ namespace _Game.Scripts.Core.Cubes
             EventBus.Unsubscribe<CubeDestroyedEvent>(OnCubeDestroyed);
         }
 
-        public void InitCubes(LevelData levelData, ISlotProvider slotProvider)
+        public void Init(LevelData levelData, ISlotProvider slotProvider, IAudioService audioService)
         {
             _slotProvider = slotProvider;
+            _audioService = audioService;
             ClearCubes();
             GenerateCubes(levelData.cubeRows);
         }
@@ -93,10 +96,13 @@ namespace _Game.Scripts.Core.Cubes
                 _spawnedCubes.Add(row);
             }
 
-            foreach (var row in _spawnedCubes)
+            foreach (var row in _spawnedCubes.Where(row => row.Count != 0))
             {
-                if (row.Count > 0)
-                    row[0].SetOutline(true);
+                row[0].SetOutline(true);
+                row[0].SetFade(1f, 0f);
+
+                for (int i = 1; i < row.Count; i++)
+                    row[i].SetFade(cubeVisualData.fadedAlpha, 0f);
             }
         }
         
@@ -136,6 +142,7 @@ namespace _Game.Scripts.Core.Cubes
 
             _spawnedCubes[foundRow].RemoveAt(0);
             cube.SetOutline(false);
+            _audioService.Play("Pop");
             PlaceCubeOnConveyor(cube).Forget();
             ShiftColumnForward(foundRow);
         }
@@ -144,6 +151,7 @@ namespace _Game.Scripts.Core.Cubes
         {
             _slotProvider.RemoveFromSlot(cube);
             cube.SetOutline(false);
+            _audioService.Play("Pop");
             PlaceCubeOnConveyor(cube).Forget();
         }
 
@@ -153,6 +161,7 @@ namespace _Game.Scripts.Core.Cubes
             if (row.Count == 0) return;
 
             row[0].SetOutline(true);
+            row[0].SetFade(1f, cubeVisualData.fadeDuration);
 
             var offset = (_spawnedCubes.Count - 1) * spacing / 2f;
 
@@ -209,6 +218,15 @@ namespace _Game.Scripts.Core.Cubes
         {
             _allCubes.Remove(e.Cube);
             if (_allCubes.Count <= 0) EventBus.Publish(new GameWinEvent());
+        }
+
+        public void StopAllConveyorCubes()
+        {
+            foreach (var cube in _allCubes.Where(cube => cube && cube.State == CubeState.OnConveyor))
+            {
+                if (cube.TryGetComponent(out SplineFollower follower))
+                    follower.follow = false;
+            }
         }
 
         public void ClearCubes()
