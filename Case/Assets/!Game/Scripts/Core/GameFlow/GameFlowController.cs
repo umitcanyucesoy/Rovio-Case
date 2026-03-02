@@ -1,3 +1,4 @@
+using _Game.Scripts.Core.Audio;
 using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.Input;
 using _Game.Scripts.Core.Levels;
@@ -11,6 +12,7 @@ namespace _Game.Scripts.Core.GameFlow
     public class GameFlowController : MonoBehaviour
     {
         private IInputService _inputService;
+        private IAudioService _audioService;
         private IUIProvider _uiProvider;
         private ILevelProvider _levelProvider;
         private ICubeProvider _cubeProvider;
@@ -21,6 +23,7 @@ namespace _Game.Scripts.Core.GameFlow
             _levelProvider = levelProvider;
             _cubeProvider = cubeProvider;
             _inputService = ServiceLocator.Get<IInputService>();
+            _audioService = ServiceLocator.Get<IAudioService>();
             
             EventBus.Subscribe<GameWinEvent>(OnGameWin);
             EventBus.Subscribe<GameLoseEvent>(OnGameLose);
@@ -37,6 +40,7 @@ namespace _Game.Scripts.Core.GameFlow
             Debug.Log("[GameFlowController] WIN!");
             _inputService.SetEnabled(false);
             _cubeProvider.StopAllConveyorCubes();
+            _audioService.Play("Win");
             _uiProvider.ShowWinPanel();
         }
 
@@ -45,6 +49,7 @@ namespace _Game.Scripts.Core.GameFlow
             Debug.Log("[GameFlowController] LOSE!");
             _inputService.SetEnabled(false);
             _cubeProvider.StopAllConveyorCubes();
+            _audioService.Play("Lose");
             _uiProvider.ShowLosePanel();
         }
 

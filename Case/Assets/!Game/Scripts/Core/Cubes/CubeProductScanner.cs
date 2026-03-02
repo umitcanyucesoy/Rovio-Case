@@ -1,3 +1,4 @@
+using _Game.Scripts.Core.Audio;
 using _Game.Scripts.Core.Grid;
 using _Game.Scripts.Enums;
 using _Game.Scripts.Services;
@@ -16,11 +17,11 @@ namespace _Game.Scripts.Core.Cubes
         private float _cellSize;
         private int _gridWidth;
         private int _gridHeight;
-        private IGridService _gridService;
         private float _gridLeft, _gridRight, _gridTop, _gridBottom;
         private int _lastScannedIndex = -1;
         private ConveyorEdge _lastEdge = ConveyorEdge.None;
         private float _pullDuration;
+        private IGridService _gridService;
 
         public void Init(float pullDuration)
         {
@@ -145,6 +146,7 @@ namespace _Game.Scripts.Core.Cubes
             if (product)
             {
                 _cube.ConsumePoint();
+                ServiceLocator.Get<IAudioService>().Play("Pull");
                 PullProduct(product).Forget();
             }
         }
