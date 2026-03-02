@@ -1,4 +1,4 @@
-using _Game.Scripts.Core.Audio;
+using _Game.Scripts.Audio;
 using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.Slots;
 

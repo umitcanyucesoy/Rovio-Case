@@ -45,9 +45,8 @@ namespace _Game.Scripts.Core.Input
             if (!Physics.Raycast(ray, out var hit, Mathf.Infinity, cubeLayerMask)) return;
 
             var cube = hit.collider.GetComponentInParent<Cube>();
-            if (cube == null) return;
-
-            Debug.Log($"[InputService] Cube clicked: {cube.name}");
+            if (!cube) return;
+            
             EventBus.Publish(new CubeClickedEvent(cube));
         }
     }

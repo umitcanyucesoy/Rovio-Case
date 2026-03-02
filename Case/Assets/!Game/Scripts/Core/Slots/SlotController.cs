@@ -33,7 +33,7 @@ namespace _Game.Scripts.Core.Slots
 
         private async UniTaskVoid PlaceInSlotAsync(Cube cube, int index)
         {
-            var targetPos = slotTransforms[index].position + new Vector3(0f, .7f, 0f);
+            var targetPos = slotTransforms[index].position + new Vector3(0f, .75f, 0f);
             var targetRot = slotTransforms[index].rotation;
 
             var jumpTween = cube.transform
@@ -46,7 +46,7 @@ namespace _Game.Scripts.Core.Slots
 
             await jumpTween.AsyncWaitForCompletion();
 
-            if (cube == null) return;
+            if (!cube) return;
 
             cube.SetState(CubeState.InSlot);
             cube.SetOutline(true);

@@ -23,6 +23,9 @@ namespace _Game.Scripts.Core.Cubes
         public int Value { get; private set; }
 
         private bool _isDestroying;
+        private Vector3 _originalVisualScale;
+
+        private void Start() => _originalVisualScale = Visual.localScale;
 
         public void SetColor(CubeColor color, Material material)
         {
@@ -59,9 +62,9 @@ namespace _Game.Scripts.Core.Cubes
 
             if (duration <= 0f)
             {
-                var color = valueText.color;
-                color.a = alpha;
-                valueText.color = color;
+                var c = valueText.color;
+                c.a = alpha;
+                valueText.color = c;
             }
             else
                 valueText.DOFade(alpha, duration);
@@ -73,6 +76,10 @@ namespace _Game.Scripts.Core.Cubes
 
             Value--;
             UpdateValueText();
+
+            Visual.DOKill();
+            Visual.localScale = _originalVisualScale;
+            Visual.DOPunchScale(cubeData.consumePunchScale, cubeData.consumePunchDuration, cubeData.consumePunchVibrato, cubeData.consumePunchElasticity);
 
             if (Value <= 0) DestroyCube().Forget();
         }
@@ -98,6 +105,19 @@ namespace _Game.Scripts.Core.Cubes
 
             EventBus.Publish(new CubeDestroyedEvent(this));
             Destroy(gameObject);
+        }
+
+        public Color GetParticleColor()
+        {
+            return Color switch
+            {
+                CubeColor.Red => UnityEngine.Color.red,
+                CubeColor.Blue => UnityEngine.Color.blue,
+                CubeColor.Green => UnityEngine.Color.green,
+                CubeColor.Yellow => UnityEngine.Color.yellow,
+                CubeColor.Orange => new Color(1f, 0.5f, 0f),
+                _ => UnityEngine.Color.white
+            };
         }
     }
 }

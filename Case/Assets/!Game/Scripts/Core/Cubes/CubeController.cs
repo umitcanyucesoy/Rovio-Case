@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using _Game.Scripts.Core.Audio;
+using _Game.Scripts.Audio;
 using _Game.Scripts.Core.Slots;
 using _Game.Scripts.Data;
 using _Game.Scripts.Enums;

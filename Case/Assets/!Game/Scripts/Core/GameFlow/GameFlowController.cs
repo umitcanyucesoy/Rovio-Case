@@ -1,4 +1,4 @@
-using _Game.Scripts.Core.Audio;
+using _Game.Scripts.Audio;
 using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.Input;
 using _Game.Scripts.Core.Levels;
@@ -27,14 +27,18 @@ namespace _Game.Scripts.Core.GameFlow
             
             EventBus.Subscribe<GameWinEvent>(OnGameWin);
             EventBus.Subscribe<GameLoseEvent>(OnGameLose);
+            EventBus.Subscribe<LevelLoadedEvent>(OnLevelLoaded);
         }
 
         private void OnDisable()
         {
             EventBus.Unsubscribe<GameWinEvent>(OnGameWin);
             EventBus.Unsubscribe<GameLoseEvent>(OnGameLose);
+            EventBus.Unsubscribe<LevelLoadedEvent>(OnLevelLoaded);
         }
 
+        private void OnLevelLoaded(LevelLoadedEvent e) => _uiProvider.SetLevelText(e.LevelNumber);
+        
         private void OnGameWin(GameWinEvent e)
         {
             Debug.Log("[GameFlowController] WIN!");

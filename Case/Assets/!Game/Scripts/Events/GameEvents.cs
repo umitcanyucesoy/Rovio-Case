@@ -6,7 +6,12 @@ namespace _Game.Scripts.Events
     public readonly struct LevelLoadedEvent : IEvent
     {
         public readonly LevelData LevelData;
-        public LevelLoadedEvent(LevelData levelData) { LevelData = levelData; }
+        public readonly int LevelNumber;
+        public LevelLoadedEvent(LevelData levelData, int levelNumber)
+        {
+            LevelData = levelData;
+            LevelNumber = levelNumber;
+        }
     }
 
     public readonly struct CubeClickedEvent : IEvent

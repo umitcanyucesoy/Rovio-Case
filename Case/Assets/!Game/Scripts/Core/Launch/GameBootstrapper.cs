@@ -1,13 +1,14 @@
-using _Game.Scripts.Core.Audio;
+using _Game.Scripts.Audio;
 using _Game.Scripts.Core.Conveyor;
 using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.GameFlow;
 using _Game.Scripts.Core.Grid;
 using _Game.Scripts.Core.Input;
 using _Game.Scripts.Core.Levels;
-using _Game.Scripts.Core.Pool;
 using _Game.Scripts.Core.Slots;
 using _Game.Scripts.Core.UI;
+using _Game.Scripts.Core.VFX;
+using _Game.Scripts.Pool;
 using _Game.Scripts.Services;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -29,6 +30,7 @@ namespace _Game.Scripts.Core.Launch
         [SerializeField] private GridService gridService;
         [SerializeField] private AudioService audioService;
         [SerializeField] private PoolService poolService;
+        [SerializeField] private ParticleService particleService;
         
         private ILevelProvider _levelProvider;
         private ICubeProvider _cubeProvider;
@@ -46,6 +48,7 @@ namespace _Game.Scripts.Core.Launch
             ServiceLocator.Unregister<IGridService>();
             ServiceLocator.Unregister<IAudioService>();
             ServiceLocator.Unregister<IPoolService>();
+            ServiceLocator.Unregister<IParticleService>();
         }
 
         private void Start()
@@ -59,6 +62,7 @@ namespace _Game.Scripts.Core.Launch
             ServiceLocator.Register<IGridService>(gridService);
             ServiceLocator.Register<IAudioService>(audioService);
             ServiceLocator.Register<IPoolService>(poolService);
+            ServiceLocator.Register<IParticleService>(particleService);
             
             _levelProvider = levelController;
             _cubeProvider = cubeController;
@@ -69,9 +73,10 @@ namespace _Game.Scripts.Core.Launch
         private void InitializeGame()
         {
             audioService.Init();
+            particleService.Init();
             conveyorController.Init();
-            _levelProvider.Init(_cubeProvider, _slotProvider, audioService);
             gameFlowController.Init(_uiProvider, _levelProvider, _cubeProvider);
+            _levelProvider.Init(_cubeProvider, _slotProvider, audioService);
             inputService.Init();
         }
     }

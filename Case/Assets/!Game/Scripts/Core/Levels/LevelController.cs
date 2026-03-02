@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using _Game.Scripts.Core.Audio;
+using _Game.Scripts.Audio;
 using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.Grid;
 using _Game.Scripts.Core.Slots;
@@ -46,18 +46,13 @@ namespace _Game.Scripts.Core.Levels
             ServiceLocator.Get<IGridService>().InitGrid(levelData);
             _cubeProvider.Init(levelData, _slotProvider, _audioService);
             
-            EventBus.Publish(new LevelLoadedEvent(levelData));
+            EventBus.Publish(new LevelLoadedEvent(levelData, _currentLevelIndex + 1));
         }
 
         public void NextLevel()
         {
-            if (_currentLevelIndex < levels.Count - 1)
-            {
-                _currentLevelIndex++;
-                LoadLevel();
-            }
-            else
-                Debug.Log("[LevelController] No more levels!");
+            _currentLevelIndex = (_currentLevelIndex + 1) % levels.Count;
+            LoadLevel();
         }
     }
 }

@@ -56,6 +56,12 @@ namespace _Game.Scripts.Data
         public float fadedAlpha = 0.35f;
         public float fadeDuration = 0.25f;
 
+        [Title("Consume Punch")]
+        public Vector3 consumePunchScale = new(0.15f, 0.15f, 0.15f);
+        public float consumePunchDuration = 0.3f;
+        public int consumePunchVibrato = 5;
+        public float consumePunchElasticity = 0.5f;
+   
         public Material GetMaterial(CubeColor color)
         {
             if (color == CubeColor.None || colorMaterials == null) return null;

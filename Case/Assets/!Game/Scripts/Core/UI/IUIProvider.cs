@@ -6,6 +6,7 @@ namespace _Game.Scripts.Core.UI
         public void HideWinPanel();
         public void ShowLosePanel();
         public void HideLosePanel();
+        public void SetLevelText(int levelNumber);
     }
 }
 

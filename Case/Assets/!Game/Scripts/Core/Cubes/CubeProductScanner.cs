@@ -1,5 +1,6 @@
-using _Game.Scripts.Core.Audio;
+using _Game.Scripts.Audio;
 using _Game.Scripts.Core.Grid;
+using _Game.Scripts.Core.VFX;
 using _Game.Scripts.Enums;
 using _Game.Scripts.Services;
 using Cysharp.Threading.Tasks;
@@ -147,6 +148,13 @@ namespace _Game.Scripts.Core.Cubes
             {
                 _cube.ConsumePoint();
                 ServiceLocator.Get<IAudioService>().Play("Pull");
+                
+                var cubePos = transform.position;
+                var randomDir = Random.insideUnitSphere;
+                randomDir.y = Mathf.Abs(randomDir.y);
+                var splashPos = cubePos + randomDir * 0.5f;
+                var splashRot = Quaternion.LookRotation(randomDir, Vector3.up);
+                ServiceLocator.Get<IParticleService>().Play("Splash", splashPos, splashRot, _cube.GetParticleColor());
                 PullProduct(product).Forget();
             }
         }

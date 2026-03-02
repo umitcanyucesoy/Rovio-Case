@@ -16,6 +16,7 @@ namespace _Game.Scripts.Core.Conveyor
         [SerializeField] private ConveyorData conveyorData;
 
         private IGridService _gridService;
+        private GameObject _startModelInstance;
 
         public void Init()
         {
@@ -69,6 +70,32 @@ namespace _Game.Scripts.Core.Conveyor
 
             spline.SetPoints(points);
             spline.Rebuild();
+            
+            SpawnStartModel(points);
+        }
+
+        private void SpawnStartModel(SplinePoint[] points)
+        {
+            if (_startModelInstance)
+                Destroy(_startModelInstance);
+
+            if (!conveyorData.startModelPrefab || points.Length < 2) return;
+
+            var startPos = points[0].position;
+            var nextPos = points[1].position;
+            var forward = (nextPos - startPos).normalized;
+            var splineRot = Quaternion.LookRotation(forward, Vector3.up);
+
+            var right = splineRot * Vector3.right;
+            var up = splineRot * Vector3.up;
+            var fwd = splineRot * Vector3.forward;
+
+            var offset = conveyorData.startModelOffset;
+            var worldOffset = right * offset.x + up * offset.y + fwd * offset.z;
+
+            var finalRot = splineRot * Quaternion.Euler(conveyorData.startModelRotation);
+
+            _startModelInstance = Instantiate(conveyorData.startModelPrefab, startPos + worldOffset, finalRot, spline.transform);
         }
         
         private SplinePoint[] BuildOpenRoundedPerimeterPoints(
