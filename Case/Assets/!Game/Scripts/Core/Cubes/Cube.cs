@@ -1,6 +1,8 @@
+using _Game.Scripts.Audio;
 using _Game.Scripts.Data;
 using _Game.Scripts.Enums;
 using _Game.Scripts.Events;
+using _Game.Scripts.Services;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Dreamteck.Splines;
@@ -87,6 +89,7 @@ namespace _Game.Scripts.Core.Cubes
         private async UniTaskVoid DestroyCube()
         {
             _isDestroying = true;
+            var previousState = State;
             State = CubeState.InQueue;
 
             if (TryGetComponent(out SplineFollower follower)) { follower.follow = false; }
@@ -103,8 +106,16 @@ namespace _Game.Scripts.Core.Cubes
 
             await moveTween.AsyncWaitForCompletion();
 
-            EventBus.Publish(new CubeDestroyedEvent(this));
+            EventBus.Publish(new CubeDestroyedEvent(this, previousState));
             Destroy(gameObject);
+        }
+
+        public void InputFailEffect()
+        {
+            Visual.DOKill();
+            Visual.localRotation = Quaternion.identity;
+            Visual.DOPunchRotation(cubeData.denyShakeRotation, cubeData.denyShakeDuration, cubeData.denyShakeVibrato, cubeData.denyShakeElasticity);
+            ServiceLocator.Get<IAudioService>().Play("InputFail");
         }
 
         public Color GetParticleColor()

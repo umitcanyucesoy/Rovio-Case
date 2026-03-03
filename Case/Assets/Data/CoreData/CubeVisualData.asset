@@ -45,3 +45,7 @@ MonoBehaviour:
   consumePunchDuration: 0.25
   consumePunchVibrato: 2
   consumePunchElasticity: 0.5
+  denyShakeRotation: {x: 0, y: 25, z: 0}
+  denyShakeDuration: 0.4
+  denyShakeVibrato: 12
+  denyShakeElasticity: 1

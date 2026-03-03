@@ -28,6 +28,7 @@ namespace _Game.Scripts.Core.GameFlow
             EventBus.Subscribe<GameWinEvent>(OnGameWin);
             EventBus.Subscribe<GameLoseEvent>(OnGameLose);
             EventBus.Subscribe<LevelLoadedEvent>(OnLevelLoaded);
+            EventBus.Subscribe<ConveyorCapacityChangedEvent>(OnCapacityChanged);
         }
 
         private void OnDisable()
@@ -35,9 +36,11 @@ namespace _Game.Scripts.Core.GameFlow
             EventBus.Unsubscribe<GameWinEvent>(OnGameWin);
             EventBus.Unsubscribe<GameLoseEvent>(OnGameLose);
             EventBus.Unsubscribe<LevelLoadedEvent>(OnLevelLoaded);
+            EventBus.Unsubscribe<ConveyorCapacityChangedEvent>(OnCapacityChanged);
         }
 
         private void OnLevelLoaded(LevelLoadedEvent e) => _uiProvider.SetLevelText(e.LevelNumber);
+        private void OnCapacityChanged(ConveyorCapacityChangedEvent e) => _uiProvider.SetCapacityText(e.Current, e.Max);
         
         private void OnGameWin(GameWinEvent e)
         {

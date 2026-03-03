@@ -1,5 +1,6 @@
 using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Data;
+using _Game.Scripts.Enums;
 
 namespace _Game.Scripts.Events
 {
@@ -23,10 +24,26 @@ namespace _Game.Scripts.Events
     public readonly struct CubeDestroyedEvent : IEvent
     {
         public readonly Cube Cube;
-        public CubeDestroyedEvent(Cube cube) { Cube = cube; }
+        public readonly CubeState PreviousState;
+        public CubeDestroyedEvent(Cube cube, CubeState previousState)
+        {
+            Cube = cube;
+            PreviousState = previousState;
+        }
     }
 
     public readonly struct GameWinEvent : IEvent { }
     
     public readonly struct GameLoseEvent : IEvent { }
+
+    public readonly struct ConveyorCapacityChangedEvent : IEvent
+    {
+        public readonly int Current;
+        public readonly int Max;
+        public ConveyorCapacityChangedEvent(int current, int max)
+        {
+            Current = current;
+            Max = max;
+        }
+    }
 }

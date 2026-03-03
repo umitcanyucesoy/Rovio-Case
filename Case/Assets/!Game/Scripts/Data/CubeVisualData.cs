@@ -61,6 +61,12 @@ namespace _Game.Scripts.Data
         public float consumePunchDuration = 0.3f;
         public int consumePunchVibrato = 5;
         public float consumePunchElasticity = 0.5f;
+
+        [Title("Deny Shake")]
+        public Vector3 denyShakeRotation = new(0f, 15f, 0f);
+        public float denyShakeDuration = 0.4f;
+        public int denyShakeVibrato = 8;
+        public float denyShakeElasticity = 0.3f;
    
         public Material GetMaterial(CubeColor color)
         {

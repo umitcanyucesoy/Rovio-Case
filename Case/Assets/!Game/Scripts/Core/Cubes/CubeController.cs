@@ -42,6 +42,9 @@ namespace _Game.Scripts.Core.Cubes
         private readonly List<List<Cube>> _spawnedCubes = new();
         [ReadOnly, ShowInInspector] private readonly List<Cube> _allCubes = new();
 
+        private const int MaxConveyorCapacity = 5;
+        private int _conveyorCount;
+
         private void OnEnable()
         {
             EventBus.Subscribe<CubeClickedEvent>(OnCubeClicked);
@@ -58,8 +61,10 @@ namespace _Game.Scripts.Core.Cubes
         {
             _slotProvider = slotProvider;
             _audioService = audioService;
+            _conveyorCount = 0;
             ClearCubes();
             GenerateCubes(levelData.cubeRows);
+            PublishCapacity();
         }
 
         private void GenerateCubes(List<ColumnData> rows)
@@ -138,7 +143,13 @@ namespace _Game.Scripts.Core.Cubes
                 }
             }
 
-            if (foundRow < 0) return;
+            if (foundRow < 0)
+            {
+                cube.InputFailEffect();
+                return;
+            }
+            
+            if (_conveyorCount >= MaxConveyorCapacity) return;
 
             _spawnedCubes[foundRow].RemoveAt(0);
             cube.SetOutline(false);
@@ -149,6 +160,8 @@ namespace _Game.Scripts.Core.Cubes
 
         private void HandleSlotClick(Cube cube)
         {
+            if (_conveyorCount >= MaxConveyorCapacity) return;
+            
             _slotProvider.RemoveFromSlot(cube);
             cube.SetOutline(false);
             _audioService.Play("Pop");
@@ -174,6 +187,9 @@ namespace _Game.Scripts.Core.Cubes
 
         private async UniTaskVoid PlaceCubeOnConveyor(Cube cube)
         {
+            _conveyorCount++;
+            PublishCapacity();
+            
             cube.transform.SetParent(null);
 
             var startPos = spline.EvaluatePosition(cubeVisualData.startPercent);
@@ -203,6 +219,8 @@ namespace _Game.Scripts.Core.Cubes
             {
                 follower.follow = false;
                 Destroy(follower);
+                _conveyorCount--;
+                PublishCapacity();
                 
                 if (!_slotProvider.TryPlaceInSlot(cube))
                 {
@@ -216,6 +234,12 @@ namespace _Game.Scripts.Core.Cubes
 
         private void OnCubeDestroyed(CubeDestroyedEvent e)
         {
+            if (e.PreviousState == CubeState.OnConveyor)
+            {
+                _conveyorCount--;
+                PublishCapacity();
+            }
+            
             _allCubes.Remove(e.Cube);
             if (_allCubes.Count <= 0) EventBus.Publish(new GameWinEvent());
         }
@@ -244,6 +268,11 @@ namespace _Game.Scripts.Core.Cubes
             if (!cubeContainer) return;
             for (int i = cubeContainer.childCount - 1; i >= 0; i--)
                 DestroyImmediate(cubeContainer.GetChild(i).gameObject);
+        }
+
+        private void PublishCapacity()
+        {
+            EventBus.Publish(new ConveyorCapacityChangedEvent(_conveyorCount, MaxConveyorCapacity));
         }
     }
 }
