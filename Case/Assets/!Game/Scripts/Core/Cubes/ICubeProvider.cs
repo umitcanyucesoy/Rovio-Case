@@ -9,5 +9,6 @@ namespace _Game.Scripts.Core.Cubes
         public void Init(LevelData levelData, ISlotProvider slotProvider, IAudioService audioService);
         public void ClearCubes();
         public void StopAllConveyorCubes();
+        public void StopAllBreaths();
     }
 }

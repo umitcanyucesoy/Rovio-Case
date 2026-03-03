@@ -59,8 +59,14 @@ namespace _Game.Scripts.Core.Slots
             cube.SetState(CubeState.InSlot);
             cube.SetOutline(true);
 
-            cube.Visual.DOPunchScale(cubeData.punchScale, cubeData.punchDuration, cubeData.punchVibrato, cubeData.punchElasticity);
+            var punchTween = cube.Visual.DOPunchScale(cubeData.punchScale, cubeData.punchDuration, cubeData.punchVibrato, cubeData.punchElasticity);
             cube.Visual.DOPunchRotation(cubeData.punchRotation, cubeData.punchRotDuration, cubeData.punchRotVibrato, cubeData.punchRotElasticity);
+
+            await punchTween.AsyncWaitForCompletion();
+
+            if (!cube) return;
+
+            cube.StartBreath();
         }
 
         public bool RemoveFromSlot(Cube cube)
@@ -70,6 +76,7 @@ namespace _Game.Scripts.Core.Slots
                 if (Equals(_slotOccupants[i], cube))
                 {
                     _slotOccupants[i] = null;
+                    cube.StopBreath();
                     CheckWarningState();
                     return true;
                 }
@@ -90,7 +97,11 @@ namespace _Game.Scripts.Core.Slots
         {
             StopWarning();
             for (int i = 0; i < _slotOccupants.Length; i++)
+            {
+                if (_slotOccupants[i])
+                    _slotOccupants[i].StopBreath();
                 _slotOccupants[i] = null;
+            }
         }
 
         private void CheckWarningState()

@@ -26,8 +26,9 @@ namespace _Game.Scripts.Core.Cubes
 
         private bool _isDestroying;
         private Vector3 _originalVisualScale;
+        private Tween _breathTween;
 
-        private void Start() => _originalVisualScale = Visual.localScale;
+        private void Awake() => _originalVisualScale = Visual.localScale;
 
         public void SetColor(CubeColor color, Material material)
         {
@@ -108,6 +109,38 @@ namespace _Game.Scripts.Core.Cubes
 
             EventBus.Publish(new CubeDestroyedEvent(this, previousState));
             Destroy(gameObject);
+        }
+
+        public void StartBreath()
+        {
+            if (_breathTween is { active: true }) return;
+
+            if (_originalVisualScale.Equals(Vector3.zero))
+                _originalVisualScale = Visual.localScale;
+
+            Visual.localScale = _originalVisualScale;
+
+            var targetScale = _originalVisualScale * cubeData.breathScale;
+            _breathTween = Visual.DOScale(targetScale, cubeData.breathDuration)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetEase(Ease.InOutSine);
+        }
+
+        public void RestartBreath()
+        {
+            StopBreath();
+            StartBreath();
+        }
+
+        public void StopBreath()
+        {
+            if (_breathTween != null)
+            {
+                _breathTween.Kill();
+                _breathTween = null;
+            }
+
+            if (Visual) Visual.localScale = _originalVisualScale;
         }
 
         public void InputFailEffect()

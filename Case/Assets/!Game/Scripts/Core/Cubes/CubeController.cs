@@ -44,24 +44,33 @@ namespace _Game.Scripts.Core.Cubes
 
         private const int MaxConveyorCapacity = 5;
         private int _conveyorCount;
+        private bool _isGameOver;
 
         private void OnEnable()
         {
             EventBus.Subscribe<CubeClickedEvent>(OnCubeClicked);
             EventBus.Subscribe<CubeDestroyedEvent>(OnCubeDestroyed);
+            EventBus.Subscribe<GameWinEvent>(OnGameOver);
+            EventBus.Subscribe<GameLoseEvent>(OnGameOver);
         }
 
         private void OnDisable()
         {
             EventBus.Unsubscribe<CubeClickedEvent>(OnCubeClicked);
             EventBus.Unsubscribe<CubeDestroyedEvent>(OnCubeDestroyed);
+            EventBus.Unsubscribe<GameWinEvent>(OnGameOver);
+            EventBus.Unsubscribe<GameLoseEvent>(OnGameOver);
         }
+
+        private void OnGameOver(GameWinEvent e) => _isGameOver = true;
+        private void OnGameOver(GameLoseEvent e) => _isGameOver = true;
 
         public void Init(LevelData levelData, ISlotProvider slotProvider, IAudioService audioService)
         {
             _slotProvider = slotProvider;
             _audioService = audioService;
             _conveyorCount = 0;
+            _isGameOver = false;
             ClearCubes();
             GenerateCubes(levelData.cubeRows);
             PublishCapacity();
@@ -105,6 +114,7 @@ namespace _Game.Scripts.Core.Cubes
             {
                 row[0].SetOutline(true);
                 row[0].SetFade(1f, 0f);
+                row[0].StartBreath();
 
                 for (int i = 1; i < row.Count; i++)
                     row[i].SetFade(cubeVisualData.fadedAlpha, 0f);
@@ -113,6 +123,8 @@ namespace _Game.Scripts.Core.Cubes
         
         private void OnCubeClicked(CubeClickedEvent handle)
         {
+            if (_isGameOver) return;
+            
             var cube = handle.Cube;
 
             switch (cube.State)
@@ -153,6 +165,7 @@ namespace _Game.Scripts.Core.Cubes
 
             _spawnedCubes[foundRow].RemoveAt(0);
             cube.SetOutline(false);
+            cube.StopBreath();
             _audioService.Play("Pop");
             PlaceCubeOnConveyor(cube).Forget();
             ShiftColumnForward(foundRow);
@@ -175,6 +188,7 @@ namespace _Game.Scripts.Core.Cubes
 
             row[0].SetOutline(true);
             row[0].SetFade(1f, cubeVisualData.fadeDuration);
+            SyncAllBreaths();
 
             var offset = (_spawnedCubes.Count - 1) * spacing / 2f;
 
@@ -182,6 +196,15 @@ namespace _Game.Scripts.Core.Cubes
             {
                 var targetPos = cubeContainer.position + new Vector3((rowIndex * spacing) - offset, 0, -i * spacing);
                 row[i].transform.DOMove(targetPos, cubeVisualData.shiftDuration).SetEase(Ease.OutQuad);
+            }
+        }
+
+        private void SyncAllBreaths()
+        {
+            foreach (var row in _spawnedCubes)
+            {
+                if (row.Count > 0)
+                    row[0].RestartBreath();
             }
         }
 
@@ -200,6 +223,8 @@ namespace _Game.Scripts.Core.Cubes
                 .SetSpeedBased()
                 .SetEase(Ease.InOutQuad)
                 .AsyncWaitForCompletion();
+
+            if (_isGameOver || !cube) return;
 
             cube.SetState(CubeState.OnConveyor);
 
@@ -251,6 +276,12 @@ namespace _Game.Scripts.Core.Cubes
                 if (cube.TryGetComponent(out SplineFollower follower))
                     follower.follow = false;
             }
+        }
+
+        public void StopAllBreaths()
+        {
+            foreach (var cube in _allCubes.Where(cube => cube))
+                cube.StopBreath();
         }
 
         public void ClearCubes()

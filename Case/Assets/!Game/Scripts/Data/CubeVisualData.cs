@@ -67,6 +67,10 @@ namespace _Game.Scripts.Data
         public float denyShakeDuration = 0.4f;
         public int denyShakeVibrato = 8;
         public float denyShakeElasticity = 0.3f;
+
+        [Title("Breath Effect")]
+        public float breathScale = 1.08f;
+        public float breathDuration = 0.8f;
    
         public Material GetMaterial(CubeColor color)
         {

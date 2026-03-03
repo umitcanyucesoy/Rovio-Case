@@ -47,6 +47,7 @@ namespace _Game.Scripts.Core.GameFlow
             Debug.Log("[GameFlowController] WIN!");
             _inputService.SetEnabled(false);
             _cubeProvider.StopAllConveyorCubes();
+            _cubeProvider.StopAllBreaths();
             _audioService.Play("Win");
             _uiProvider.ShowWinPanel();
         }
@@ -56,6 +57,7 @@ namespace _Game.Scripts.Core.GameFlow
             Debug.Log("[GameFlowController] LOSE!");
             _inputService.SetEnabled(false);
             _cubeProvider.StopAllConveyorCubes();
+            _cubeProvider.StopAllBreaths();
             _audioService.Play("Lose");
             _uiProvider.ShowLosePanel();
         }

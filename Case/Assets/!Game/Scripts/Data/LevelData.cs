@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Enums;
 using Sirenix.OdinInspector;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace _Game.Scripts.Data
@@ -19,7 +21,7 @@ namespace _Game.Scripts.Data
 
         [Space(10)]
         [Title("Product Grid")]
-        [TableMatrix(SquareCells = true, DrawElementMethod = nameof(DrawCell))]
+        [TableMatrix(SquareCells = true, DrawElementMethod = "DrawCell")]
         public ProductColor[,] GridMatrix;
 
         [Space(10)]

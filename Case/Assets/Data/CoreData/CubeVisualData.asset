@@ -49,3 +49,5 @@ MonoBehaviour:
   denyShakeDuration: 0.4
   denyShakeVibrato: 12
   denyShakeElasticity: 1
+  breathScale: 1.08
+  breathDuration: 0.6

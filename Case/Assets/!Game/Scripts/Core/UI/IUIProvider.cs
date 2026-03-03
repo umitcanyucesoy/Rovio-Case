@@ -2,12 +2,12 @@ namespace _Game.Scripts.Core.UI
 {
     public interface IUIProvider
     {
-        void ShowWinPanel();
-        void HideWinPanel();
-        void ShowLosePanel();
-        void HideLosePanel();
-        void SetLevelText(int levelNumber);
-        void SetCapacityText(int current, int max);
+        public void ShowWinPanel();
+        public void HideWinPanel();
+        public void ShowLosePanel();
+        public void HideLosePanel();
+        public void SetLevelText(int levelNumber);
+        public void SetCapacityText(int current, int max);
     }
 }
 
