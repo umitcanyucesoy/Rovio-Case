@@ -4,6 +4,7 @@ using _Game.Scripts.Core.Cubes;
 using _Game.Scripts.Core.GameFlow;
 using _Game.Scripts.Core.Grid;
 using _Game.Scripts.Core.Input;
+using _Game.Scripts.Core.Layout;
 using _Game.Scripts.Core.Levels;
 using _Game.Scripts.Core.Slots;
 using _Game.Scripts.Core.UI;
@@ -24,6 +25,7 @@ namespace _Game.Scripts.Core.Launch
         [SerializeField] private SlotController slotController;
         [SerializeField] private GameFlowController gameFlowController;
         [SerializeField] private UIController uiController;
+        [SerializeField] private CameraController cameraController;
         
         [Title("Services")]
         [SerializeField] private InputService inputService;
@@ -75,6 +77,7 @@ namespace _Game.Scripts.Core.Launch
             audioService.Init();
             particleService.Init();
             conveyorController.Init();
+            cameraController.Init();
             gameFlowController.Init(_uiProvider, _levelProvider, _cubeProvider);
             _levelProvider.Init(_cubeProvider, _slotProvider, audioService);
             inputService.Init();
