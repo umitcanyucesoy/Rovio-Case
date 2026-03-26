@@ -14,7 +14,7 @@ This project focuses not only on the core gameplay loop, but also on building a 
 </p>
 
 
-🎥 **Gameplay Video:** [Watch on YouTube](YOUR_YOUTUBE_LINK_HERE)
+🎥 **Gameplay Video:** [Watch on YouTube](https://www.youtube.com/watch?v=1rU6ku6ZvY0&list=PLZ1QlqWyR4gPr8lmlTJAaHDDQ6DjjlKcx)
 
 ---
 
